@@ -1,0 +1,41 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body {
+  @apply bg-white text-slate-800;
+}
+
+/* Tone down motion and glow */
+.animate-in,
+.fade-in {
+  animation: none !important;
+}
+
+/* Scrollbar styling to mimic `scrollbar-thin` */
+.scrollbar-thin::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+.scrollbar-thin::-webkit-scrollbar-track {
+  background: transparent;
+}
+.scrollbar-thin::-webkit-scrollbar-thumb {
+  background-color: rgba(148, 163, 184, 0.8);
+  border-radius: 9999px;
+}
+
+/* Neutralize dark blocks to a light, minimal palette */
+.bg-\[\#1e2329\],
+.bg-\[\#252a30\],
+.bg-\[\#2d333b\] {
+  background-color: #f8fafc !important;
+  color: #0f172a !important;
+}
+.text-white {
+  color: #0f172a !important;
+}
+.border-slate-700\/50,
+.border-slate-700 {
+  border-color: #e2e8f0 !important;
+}

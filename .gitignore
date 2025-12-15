@@ -1,0 +1,80 @@
+# Node
+node_modules/
+
+# Build output
+dist/
+build/
+
+# Logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# OS
+.DS_Store
+Thumbs.db
+
+# IDEs
+.vscode/
+.idea/
+*.sublime-workspace
+*.sublime-project
+
+# Env
+.env
+.env.*
+
+# Misc
+*.local
+*.log
+coverage/
+
+# Dependency directories
+jspm_packages/
+
+# Optional npm cache directory
+.npm
+
+# Optional eslint cache
+.eslintcache
+
+# Optional REPL history
+.node_repl_history
+
+# Mac system files
+Icon?
+
+# Parcel-bundler cache
+.cache
+
+# SvelteKit build
+.svelte-kit
+
+# Storybook build
+out/
+
+# TypeScript
+*.tsbuildinfo
+
+# Next.js
+.next/
+
+# Tailwind JIT
+.tailwind*
+
+# VS Code settings
+.history/
+
+# JetBrains
+*.iml
+
+# Prettier
+.prettier*
+
+# Test coverage
+coverage/
+
+# Others
+*.swp
+*.bak
+*.tmp
