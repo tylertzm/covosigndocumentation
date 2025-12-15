@@ -1,6 +1,6 @@
 import React from 'react';
 import CodeBlock from '../components/CodeBlock';
-import { FileOutput } from 'lucide-react';
+
 
 
 
@@ -251,7 +251,7 @@ value.atOffset(ZoneOffset.UTC)
     </section>
 
     <section id="audit-storage" className="mb-16 scroll-mt-32">
-      <h2 className="text-xl font-bold text-slate-900 mb-4 flex items-center gap-2"><FileOutput className="w-5 h-5 text-amber-500" /> Storage & Retrieval</h2>
+      <h2 className="text-xl font-bold text-slate-900 mb-4 flex items-center gap-2">Storage & Retrieval</h2>
       <div className="bg-slate-50 border border-slate-200 rounded-lg p-4 text-sm text-slate-700 space-y-2">
         <p><strong>Path:</strong> <code>s3://your-bucket/audit-trails/{`{requestId}`}/audit-trail.pdf</code></p>
         <p><strong>On-demand:</strong> Use the download endpoint to generate and stream a fresh PDF.</p>
@@ -269,7 +269,7 @@ value.atOffset(ZoneOffset.UTC)
     </section>
 
     <section id="audit-config" className="mb-16 scroll-mt-32">
-      <h2 className="text-xl font-bold text-slate-900 mb-4 flex items-center gap-2"><Cpu className="w-5 h-5 text-slate-500" /> Configuration & Customization</h2>
+      <h2 className="text-xl font-bold text-slate-900 mb-4 flex items-center gap-2">Configuration & Customization</h2>
       <div className="grid md:grid-cols-2 gap-4">
         <div className="bg-slate-50 border border-slate-200 rounded-lg p-4">
           <h4 className="font-bold text-slate-800 mb-2 text-sm">Template</h4>
@@ -302,7 +302,7 @@ setLabeledValue(document, "Custom Field Label", context.details().get("customFie
     </section>
 
     <section id="audit-troubleshoot" className="mb-16 scroll-mt-32">
-      <h2 className="text-xl font-bold text-slate-900 mb-6 flex items-center gap-2"><Wrench className="w-5 h-5 text-orange-500" /> Troubleshooting</h2>
+      <h2 className="text-xl font-bold text-slate-900 mb-6 flex items-center gap-2">Troubleshooting</h2>
       <div className="grid md:grid-cols-2 gap-6">
         <div className="border border-slate-200 rounded-lg p-5">
           <h4 className="font-bold text-slate-800 mb-2 text-sm">Generation Failed</h4>
@@ -328,7 +328,7 @@ setLabeledValue(document, "Custom Field Label", context.details().get("customFie
     </section>
 
     <section id="audit-best" className="scroll-mt-32">
-      <h2 className="text-xl font-bold text-slate-900 mb-4 flex items-center gap-2"><Shield className="w-5 h-5 text-emerald-500" /> Best Practices</h2>
+      <h2 className="text-xl font-bold text-slate-900 mb-4 flex items-center gap-2">Best Practices</h2>
       <div className="grid md:grid-cols-3 gap-4">
         <div className="bg-slate-50 border border-slate-200 rounded-lg p-4">
           <h4 className="font-bold text-slate-800 mb-2 text-sm">Admins</h4>

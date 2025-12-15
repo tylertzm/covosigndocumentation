@@ -90,7 +90,7 @@ export default function App() {
       <nav className="border-b border-slate-200 sticky top-0 bg-white/80 backdrop-blur z-10">
         <div className="max-w-6xl mx-auto px-6 h-16 flex items-center justify-between">
           <div className="flex items-center gap-2 font-bold text-slate-900 text-lg">
-            <div className="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center text-white">S</div>Signature API
+            CovoSign
           </div>
         </div>
       </nav>
