@@ -1,5 +1,13 @@
-import React from 'react';
-import { Settings, FileText, UserPlus, PenTool, Send, ShieldAlert, Webhook } from 'lucide-react';
+import React from "react";
+import {
+  Settings,
+  FileText,
+  UserPlus,
+  PenTool,
+  Send,
+  ShieldAlert,
+  Webhook,
+} from "lucide-react";
 
 export const creationSteps = [
   {

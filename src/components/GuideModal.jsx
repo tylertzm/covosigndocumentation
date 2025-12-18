@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
-import { Terminal, X } from 'lucide-react';
-import CodeBlock from './CodeBlock';
+import React, { useState } from "react";
+import { Terminal, X } from "lucide-react";
+import CodeBlock from "./CodeBlock";
 
 const GuideModal = ({ onClose, guideSteps, title }) => {
   const [activeStep, setActiveStep] = useState(0);
@@ -20,30 +20,35 @@ const GuideModal = ({ onClose, guideSteps, title }) => {
                 onClick={() => setActiveStep(step.id)}
                 className={`px-4 py-3 rounded-lg cursor-pointer transition-all border ${
                   activeStep === step.id
-                    ? 'bg-blue-600/10 border-blue-500/50 text-white'
-                    : 'bg-[#2d333b] border-transparent text-slate-400'
+                    ? "bg-blue-600/10 border-blue-500/50 text-white"
+                    : "bg-[#2d333b] border-transparent text-slate-400"
                 }`}
               >
                 <div className="flex items-center gap-3">
                   <span
                     className={`flex items-center justify-center w-6 h-6 rounded-full text-xs font-bold ${
                       activeStep === step.id
-                        ? 'bg-green-500 text-white'
-                        : 'bg-slate-700 text-slate-300'
+                        ? "bg-green-500 text-white"
+                        : "bg-slate-700 text-slate-300"
                     }`}
                   >
                     {step.id}
                   </span>
                   <div>
                     <div className="text-sm font-medium">{step.title}</div>
-                    <div className="text-xs text-slate-500">{step.shortDesc}</div>
+                    <div className="text-xs text-slate-500">
+                      {step.shortDesc}
+                    </div>
                   </div>
                 </div>
               </div>
             ))}
           </div>
           <div className="p-4 border-t border-slate-700/50 text-center">
-            <button onClick={onClose} className="text-slate-400 hover:text-white text-sm">
+            <button
+              onClick={onClose}
+              className="text-slate-400 hover:text-white text-sm"
+            >
               Exit Guide
             </button>
           </div>
@@ -59,7 +64,10 @@ const GuideModal = ({ onClose, guideSteps, title }) => {
             </button>
           </div>
           <div className="flex-1 overflow-auto p-6 scrollbar-thin">
-            <CodeBlock code={activeStepData.code} language={activeStepData.fileType} />
+            <CodeBlock
+              code={activeStepData.code}
+              language={activeStepData.fileType}
+            />
           </div>
         </div>
       </div>
