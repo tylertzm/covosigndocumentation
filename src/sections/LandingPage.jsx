@@ -27,14 +27,16 @@ const LandingPage = ({ onNavigate }) => {
     return (
         <div className="max-w-6xl mx-auto px-6 py-12 animate-in fade-in duration-500">
             <div className="mb-12">
+                <h1 className="text-4xl font-bold text-slate-900 mb-6 tracking-tight">Developer Resources</h1>
+                <div className="bg-slate-50 border border-slate-200 rounded-xl p-8">
+                    <h2 className="text-lg font-bold text-slate-900 mb-3">API Overview</h2>
+                    <p className="text-slate-600 leading-relaxed mb-4">
+                        Create an account and learn how to build on CovoSign.
+                    </p>
+                </div>
             </div>
             <Section title="Essentials">
-                <div onClick={() => onNavigate("overview")}>
-                    <Card
-                        title="Overview"
-                        description="Understand the core concepts of CovoSign and how to get started quickly."
-                    />
-                </div>
+
                 <div onClick={() => onNavigate("auth")}>
                     <Card
                         title="Authentication"

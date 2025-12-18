@@ -1,13 +1,13 @@
 import React, { useState } from "react";
 import GuideModal from "./components/GuideModal";
 import { creationSteps, webhookSteps } from "./data/guideSteps.jsx";
-import { LandingPage, OverviewContent, SandboxContent, GuidesContent, AuthContent, RequestResponseContent, ErrorsContent, IdempotencyContent, PaginationFiltersContent, CorrelationIdsContent, WebhooksContent, BestPracticesContent, ApiKeysContent, WorkflowsContent, StatusPage, FieldTypesContent, AuditTrailContent, RateLimitsContent } from "./sections";
+import { LandingPage, SandboxContent, GuidesContent, AuthContent, RequestResponseContent, ErrorsContent, IdempotencyContent, PaginationFiltersContent, CorrelationIdsContent, WebhooksContent, BestPracticesContent, ApiKeysContent, WorkflowsContent, StatusPage, FieldTypesContent, AuditTrailContent, RateLimitsContent } from "./sections";
 
 const NAV_SECTIONS = [
   {
     title: "Getting Started",
     items: [
-      { id: "overview", label: "Overview" },
+
       {
         id: "guide",
         label: "Quick Start",
@@ -135,7 +135,7 @@ const NAV_SECTIONS = [
 
 export default function App() {
   const [activeTab, setActiveTab] = useState("resources");
-  const [currentView, setCurrentView] = useState("overview");
+  const [currentView, setCurrentView] = useState("guide");
   const [showGuide, setShowGuide] = useState(false);
   const [showWebhookGuide, setShowWebhookGuide] = useState(false);
 
@@ -193,7 +193,7 @@ export default function App() {
               <button
                 onClick={() => {
                   setActiveTab("documentation");
-                  setCurrentView("overview");
+                  setCurrentView("guide");
                 }}
                 className={`${activeTab === "documentation" ? "text-blue-600" : "text-slate-500 hover:text-slate-800"} transition-colors`}
               >
@@ -263,7 +263,7 @@ export default function App() {
             </aside>
 
             <div className="flex-1 min-w-0">
-              {currentView === "overview" && <OverviewContent />}
+
               {currentView === "guide" && (
                 <GuidesContent
                   onLaunchGuide={() => setShowGuide(true)}

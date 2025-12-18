@@ -39,16 +39,25 @@ const CorrelationIdsContent = () => (
       <h2 className="text-xl font-bold text-slate-900 mb-6">Usage</h2>
       <div className="space-y-4">
         <div className="bg-slate-100 rounded p-4 font-mono text-sm text-slate-700">
-          X-Correlation-ID: req_custom_123
+          <span className="text-slate-400">// Request Header (from you)</span><br />
+          X-Correlation-ID: 7b3h98...
         </div>
-        <p className="text-slate-600 text-sm">
-          Pass this header to trace your own IDs. If omitted, CovoSign generates
-          one and echoes it back in responses and webhooks.
+        <p className="text-slate-600 text-sm leading-relaxed">
+          The <code className="font-mono text-xs">X-Correlation-ID</code> is primarily used for logging, debugging, and tracing requests across services.
         </p>
-        <ul className="list-disc list-inside text-sm text-slate-600 space-y-1">
-          <li>Include the ID in logs for faster support.</li>
-          <li>Use it to connect API calls, webhooks, and audit entries.</li>
-          <li>Propagate the same ID across downstream services.</li>
+        <ul className="list-disc list-inside text-sm text-slate-600 space-y-2 mt-2">
+          <li>
+            <strong>Client-Generated:</strong> You can generate a unique ID (e.g. UUID) and send it in the <code className="font-mono text-xs">X-Correlation-ID</code> header.
+          </li>
+          <li>
+            <strong>Auto-Generated:</strong> If you don't provide one, CovoSign automatically generates a unique ID for the request.
+          </li>
+          <li>
+            <strong>Response:</strong> The final ID (yours or ours) is always returned in the response headers.
+          </li>
+          <li>
+            <strong>Tracing:</strong> This ID is attached to all internal logs and traces, allowing us to debug issues end-to-end. If you report an issue, providing this ID helps support find the exact logs.
+          </li>
         </ul>
       </div>
     </section>
