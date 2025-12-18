@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import GuideModal from "./components/GuideModal";
 import { creationSteps, webhookSteps } from "./data/guideSteps.jsx";
-import { LandingPage, OverviewContent, SandboxContent, GuidesContent, AuthContent, RequestResponseContent, ErrorsContent, IdempotencyContent, PaginationFiltersContent, CorrelationIdsContent, WebhooksContent, BestPracticesContent, ApiKeysContent, WorkflowsContent, StatusPage, FieldTypesContent, AuditTrailContent, IdentitiesContent, RateLimitsContent } from "./sections";
+import { LandingPage, OverviewContent, SandboxContent, GuidesContent, AuthContent, RequestResponseContent, ErrorsContent, IdempotencyContent, PaginationFiltersContent, CorrelationIdsContent, WebhooksContent, BestPracticesContent, ApiKeysContent, WorkflowsContent, StatusPage, FieldTypesContent, AuditTrailContent, RateLimitsContent } from "./sections";
 
 const NAV_SECTIONS = [
   {
@@ -62,13 +62,9 @@ const NAV_SECTIONS = [
           { id: "audit-compliance", label: "Compliance" },
           { id: "audit-events", label: "Events" },
           { id: "audit-timezone", label: "Timezone" },
-          { id: "audit-storage", label: "Storage" },
-          { id: "audit-config", label: "Config" },
-          { id: "audit-troubleshoot", label: "Troubleshooting" },
-          { id: "audit-best", label: "Best Practices" },
         ],
       },
-      { id: "identities", label: "Identities" },
+
     ],
   },
   {
@@ -290,7 +286,7 @@ export default function App() {
               {currentView === "statuses" && <StatusPage />}
               {currentView === "fieldTypes" && <FieldTypesContent />}
               {currentView === "auditTrail" && <AuditTrailContent />}
-              {currentView === "identities" && <IdentitiesContent />}
+
 
               {currentView === "auth" && <AuthContent />}
               {currentView === "rateLimits" && <RateLimitsContent />}

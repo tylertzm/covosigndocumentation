@@ -20,8 +20,8 @@ const RateLimitsContent = () => (
       </div>
       <p className="text-lg text-slate-600 leading-relaxed mb-8">
         To ensure fair usage and stability, CovoSign implements rate limiting
-        per API key and environment. Limits are generous for standard use and
-        upgradeable for higher volume.
+        per API key and environment. Limits are enforced using a Redis-based sliding
+        window mechanism to ensure consistent performance.
       </p>
     </div>
     <section className="mb-16">
@@ -55,13 +55,16 @@ const RateLimitsContent = () => (
           </div>
           <div className="p-6">
             <div className="text-3xl font-bold text-slate-900 mb-2">
-              1,000{" "}
+              100{" "}
               <span className="text-base font-normal text-slate-500">
                 req/min
               </span>
             </div>
             <p className="text-sm text-slate-600 mb-4">
-              Per API Key; 500 lifetime signature request sends per user
+              Per API Key (Default)
+            </p>
+            <p className="text-xs text-slate-500 mb-4">
+              Configurable via <code className="font-mono">SANDBOX_RATE_LIMIT</code> environment variable.
             </p>
             <div className="text-xs font-mono text-slate-500 bg-slate-50 p-2 rounded">
               csk_sandbox_*
@@ -70,6 +73,75 @@ const RateLimitsContent = () => (
         </div>
       </div>
     </section>
+
+    <section className="mb-16">
+      <h2 className="text-xl font-bold text-slate-900 mb-6">Implementation Details</h2>
+      <div className="bg-white border border-slate-200 rounded-lg p-6 shadow-sm mb-6">
+        <h3 className="font-bold text-slate-800 mb-2">Redis-Based Sliding Window</h3>
+        <p className="text-sm text-slate-600 leading-relaxed mb-4">
+          Rate limiting is implemented using a <strong>Redis-based sliding window</strong>. Each API request increments a counter (<code className="font-mono text-xs">INCR</code> operation) associated with your API key for the current minute. If the counter exceeds the limit, further requests are blocked until the next window begins.
+        </p>
+      </div>
+    </section>
+
+    <section className="mb-16">
+      <h2 className="text-xl font-bold text-slate-900 mb-6">API Key Quotas</h2>
+      <div className="grid md:grid-cols-2 gap-6">
+        <div className="bg-white border border-slate-200 rounded-lg p-6 hover:shadow-md transition-shadow">
+          <h3 className="font-bold text-slate-800 mb-4 flex items-center gap-2">
+            <span className="w-2 h-2 rounded-full bg-amber-400"></span>
+            Sandbox Keys
+          </h3>
+          <ul className="space-y-3 text-sm text-slate-600">
+            <li className="flex justify-between items-center">
+              <span>Max Active Keys</span>
+              <span className="font-mono font-bold text-slate-900 border border-slate-200 rounded px-2 bg-slate-50">3</span>
+            </li>
+            <li className="flex justify-between items-center text-xs text-slate-500 italic">
+              No Enterprise plan required
+            </li>
+          </ul>
+        </div>
+        <div className="bg-white border border-slate-200 rounded-lg p-6 hover:shadow-md transition-shadow">
+          <h3 className="font-bold text-slate-800 mb-4 flex items-center gap-2">
+            <span className="w-2 h-2 rounded-full bg-green-500"></span>
+            Production Keys
+          </h3>
+          <ul className="space-y-3 text-sm text-slate-600">
+            <li className="flex justify-between items-center">
+              <span>Max Active Keys</span>
+              <span className="font-mono font-bold text-slate-900 border border-slate-200 rounded px-2 bg-slate-50">5</span>
+            </li>
+            <li className="flex justify-between items-center text-xs text-slate-500 italic">
+              Enterprise plan required
+            </li>
+          </ul>
+        </div>
+      </div>
+      <p className="text-sm text-slate-600 mt-4 bg-slate-50 border border-slate-200 p-3 rounded-lg">
+        <strong>Quota Validation:</strong> Quotas are strictly enforced during key creation. You will receive a specific error message if you attempt to create more keys than your plan allows.
+      </p>
+    </section>
+
+    <section className="mb-16">
+      <h2 className="text-xl font-bold text-slate-900 mb-6">Billing & Custom Limits</h2>
+      <div className="bg-slate-50 border border-slate-200 rounded-lg p-6">
+        <p className="text-sm text-slate-700 leading-relaxed mb-4">
+          Limits are integrated with your organization's <strong>Billing Plan</strong>. While the standard limits are fixed, the infrastructure supports custom configurations for Enterprise customers.
+        </p>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs text-slate-600">
+          <div className="bg-white p-3 rounded border border-slate-200">
+            <strong className="block text-slate-900 mb-1">Quota Storage</strong>
+            Stored in <code className="font-mono">BillingPlan.quotaDefaults</code> JSON field.
+          </div>
+          <div className="bg-white p-3 rounded border border-slate-200">
+            <strong className="block text-slate-900 mb-1">Future Customization</strong>
+            Plans can define custom <code className="font-mono">productionApiKeysPerAccount</code> and <code className="font-mono">apiKeyRateLimit</code>.
+          </div>
+        </div>
+      </div>
+    </section>
+
     <section className="mb-16">
       <h2 className="text-xl font-bold text-slate-900 mb-6">
         Response Headers

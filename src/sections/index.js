@@ -14,6 +14,6 @@ export { default as StatusPage } from "./StatusPage";
 export { default as WorkflowsContent } from "./WorkflowsContent";
 export { default as FieldTypesContent } from "./FieldTypesContent";
 export { default as AuditTrailContent } from "./AuditTrailContent";
-export { default as IdentitiesContent } from "./IdentitiesContent";
+
 export { default as RateLimitsContent } from "./RateLimitsContent";
 export { default as LandingPage } from "./LandingPage";
