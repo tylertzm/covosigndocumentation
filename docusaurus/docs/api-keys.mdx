@@ -1,0 +1,102 @@
+---
+title: "API Keys"
+---
+
+import CodeBlock from '@theme/CodeBlock';
+
+# API Keys
+
+API keys are special codes that your code uses to prove to CovoSign that it's allowed to make requests. It's like a username and password combined into one secret string. Never share your API key with anyone, just like you wouldn't share your bank password. There are sandbox keys for testing (like a playground) and production keys for real use.
+
+CovoSign uses API keys to authenticate requests. Keys are environment-specific (sandbox vs production) and can be personal or service keys for automation.
+
+API keys serve as a form of authentication, which is the process of verifying the identity of a user or system. In RESTful APIs like CovoSign's, authentication ensures that only authorized clients can access protected resources. Environment-specific keys mean that keys are tied to either the sandbox (testing) or production (live) environment, preventing accidental mixing of test and real data. Personal keys are for individual developers, while service keys are for automated systems, allowing for better access control and auditing.
+
+- Personal keys for individual developers
+- Service account keys for automated systems
+- Separate keys per environment to prevent test data from touching production
+- Instant revocation and audit logging of usage
+- Rotate keys regularly; store secrets in env vars or vaults
+
+## Key Types
+
+| Key Type | Environment | Capability | Prefix |
+| :--- | :--- | :--- | :--- |
+| **Sandbox** | Testing Only | Can only create Sandbox keys | `csk_sandbox_` |
+| **Production** | Live Production | Can create both Sandbox & Production keys | `csk_live_` |
+
+:::info Production Key Access
+**Production keys are not created via the API.**
+
+To obtain production credentials, please verify your **Enterprise Plan** status and contact support: [support@covosign.com](mailto:support@covosign.com)
+:::
+
+The table above outlines the different types of API keys available in CovoSign. Sandbox keys are prefixed with 'csk_sandbox_' and are intended for development and testing purposes, allowing you to experiment without affecting live data. Production keys, prefixed with 'csk_live_', are for real-world use and require an enterprise subscription due to their higher privileges and rate limits. The capability column indicates what each key type can do, ensuring proper separation of concerns between testing and production environments.
+
+## Response Examples
+
+When you create an API key via the API, CovoSign returns a JSON response containing the key details. The 'code' field indicates the HTTP status code (201 for successful creation). The 'data' object includes the unique 'id' of the key, the actual 'apiKey' string (which you must store securely), and metadata like the environment and name. Below are examples for both sandbox and production key creation responses.
+
+### Sandbox Key
+
+```json
+{ 
+  "code": 201, 
+  "statusText": "Created", 
+  "message": "API key created successfully. Store it securely - it won't be shown again.", 
+  "data": { 
+    "id": "d6a776a3-f1d9-4a79-b1c6-be1e4bd8d78f", 
+    "apiKey": "csk_sandbox_Mdi9ewW3Ch81P6abc123def456", 
+    "keyPrefix": "csk_sandbox_Mdi9ewW3Ch81P6", 
+    "name": "Testing Purposes Only", 
+    "environment": "SANDBOX" 
+  } 
+}
+```
+
+### Production Key
+
+```json
+{ 
+  "code": 201, 
+  "statusText": "Created", 
+  "message": "API key created successfully. Store it securely - it won't be shown again.", 
+  "data": { 
+    "id": "31b33a08-9ac8-4532-8342-e1111891d1cd", 
+    "apiKey": "csk_live_dHQof7Yo89rwMlWRabc123def456", 
+    "keyPrefix": "csk_live_dHQof7Yo89rwMlWR", 
+    "name": "Live Production Key", 
+    "environment": "PRODUCTION" 
+  } 
+}
+```
+
+## Creating API Keys
+
+You can programmatically create **Sandbox** API keys using the `/api/v1/api-keys` endpoint. This is useful for rotating keys or managing service accounts.
+
+**POST** `/api/v1/api-keys`
+
+### Request Examples
+
+#### Sandbox Key Request
+
+```json
+{ 
+  "name": "My Sandbox API Key", 
+  "environment": "SANDBOX", 
+  "allowedIps": ["192.168.1.1", "10.0.0.1"] 
+}
+```
+
+### Error Responses
+
+```json
+// 403 Forbidden (Enterprise Required)
+{ "code": 403, "statusText": "Forbidden", "message": "Enterprise plan required for production API keys", "data": null }
+```
+
+```json
+// 400 Bad Request (Validation)
+{ "code": 400, "statusText": "Bad Request", "message": "Name must be between 1 and 200 characters", "data": null }
+```

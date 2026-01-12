@@ -1,0 +1,29 @@
+---
+title: "Correlation IDs"
+---
+
+# Correlation IDs
+
+Correlation IDs are like tracking numbers for your requests. They help you follow a single request through all the steps in the system, from your app to the API to webhooks. It's useful for debugging, like knowing which log messages belong to the same user action, making it easier to troubleshoot issues.
+
+Use correlation IDs as breadcrumbs to trace a request across API calls, webhooks, logs, and audit trails.
+
+## Request Flow
+
+`Client` &rarr; `API Gateway` &rarr; `Service` &rarr; `Database` &rarr; `Webhooks`
+
+**req_123... (Persists)**
+
+## Usage
+
+```http
+// Request Header (from you)
+X-Correlation-ID: 7b3h98...
+```
+
+The `X-Correlation-ID` is primarily used for logging, debugging, and tracing requests across services.
+
+- **Client-Generated:** You can generate a unique ID (e.g. UUID) and send it in the `X-Correlation-ID` header.
+- **Auto-Generated:** If you don't provide one, CovoSign automatically generates a unique ID for the request.
+- **Response:** The final ID (yours or ours) is always returned in the response headers.
+- **Tracing:** This ID is attached to all internal logs and traces, allowing us to debug issues end-to-end. If you report an issue, providing this ID helps support find the exact logs.

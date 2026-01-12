@@ -1,0 +1,129 @@
+---
+title: "Error Handling"
+---
+
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
+
+# Error Handling
+
+Errors happen when something goes wrong in your code or with the API. It's like when you try to open a door but it's locked. CovoSign sends back error messages to tell you what went wrong, so you can fix it. Learning to handle errors makes your app more robust and prevents crashes.
+
+Error handling is a critical aspect of API integration, ensuring your application can gracefully respond to unexpected situations. HTTP status codes provide standardized ways to communicate error types, while structured error responses give detailed information about what went wrong. Proper error handling prevents application crashes and provides better user experiences.
+
+## Error Structure
+
+CovoSign returns errors in a consistent JSON format that includes a success flag, error details, and optional additional information. The 'error' object contains a machine-readable code, a human-readable message, and sometimes field-specific details. HTTP status codes follow REST conventions: 4xx for client errors (your fault) and 5xx for server errors (our fault).
+
+```json
+{ "code": 400, "statusText": "Bad Request", "message": "Invalid email format" }
+```
+
+Client errors (4xx) cover validation, auth, and conflicts; server errors (5xx) are transient and should be retried with backoff.
+
+### Handle client errors
+- Validate payloads before sending
+- Check auth headers and scopes
+- Resolve conflicts (409) before retrying
+
+### Handle server errors
+- Retry with exponential backoff
+- Use idempotency keys to avoid duplicates
+- Log correlation IDs for support
+
+## Common Codes
+
+The table below lists frequently encountered HTTP status codes and their corresponding error codes in CovoSign. Status codes in the 400s indicate client-side issues that you can fix, while 500s indicate server problems. Each error code provides specific information about the type of problem encountered, helping you diagnose and resolve issues quickly.
+
+| Status | Code | Meaning |
+| :--- | :--- | :--- |
+| **400** | **VALIDATION_ERROR** | Invalid request parameters |
+| **401** | **INVALID_API_KEY** | Auth failed |
+| **429** | **RATE_LIMIT_EXCEEDED** | Too many requests |
+
+## Retry Strategy
+
+When API calls fail due to transient issues (like network problems or temporary server overload), implementing a retry strategy can improve reliability. Exponential backoff increases the wait time between retries to avoid overwhelming the server. The examples below show implementations that retry up to 3 times with increasing delays, but only for server errors (5xx status codes).
+
+<Tabs>
+  <TabItem value="javascript" label="Node.js" default>
+    ```javascript
+    const axios = require('axios');
+
+    async function requestWithRetry(method, url, data, maxRetries = 3) {
+      let attempt = 0;
+      while (attempt < maxRetries) {
+        try {
+          const response = await axios({ method, url, data, headers: { 'X-API-Key': process.env.API_KEY } });
+          return response.data;
+        } catch (error) {
+          if (error.response && error.response.status < 500) throw error; // Don't retry client errors
+          attempt++;
+          await new Promise(r => setTimeout(r, Math.pow(2, attempt) * 1000));
+        }
+      }
+      throw new Error('Max retries exceeded');
+    }
+    ```
+  </TabItem>
+  <TabItem value="python" label="Python">
+    ```python
+    import requests
+    import time
+
+    def request_with_retry(method, url, data=None, max_retries=3):
+        attempt = 0
+        while attempt < max_retries:
+            try:
+                response = requests.request(method, url, json=data, headers={'X-API-Key': os.getenv('API_KEY')})
+                response.raise_for_status()
+                return response.json()
+            except requests.exceptions.RequestException as e:
+                if hasattr(e.response, 'status_code') and e.response.status_code < 500:
+                    raise  # Don't retry client errors
+                attempt += 1
+                time.sleep(2 ** attempt)
+        raise Exception('Max retries exceeded')
+    ```
+  </TabItem>
+  <TabItem value="bash" label="Bash">
+    ```bash
+    #!/bin/bash
+
+    request_with_retry() {
+        local method="$1"
+        local url="$2"
+        local data="$3"
+        local max_retries="${4:-3}"
+        local attempt=0
+
+        while [ $attempt -lt $max_retries ]; do
+            response=$(curl -s -w "%{http_code}" -X "$method" "$url" \
+                -H "X-API-Key: ${API_KEY}" \
+                -H "Content-Type: application/json" \
+                -d "$data")
+            
+            http_code=$(echo "$response" | tail -c 3)
+            body=$(echo "$response" | head -n -1)
+            
+            if [ "$http_code" -ge 200 ] && [ "$http_code" -lt 300 ]; then
+                echo "$body"
+                return 0
+            elif [ "$http_code" -ge 400 ] && [ "$http_code" -lt 500 ]; then
+                echo "Client error: $http_code" >&2
+                return 1
+            fi
+            
+            attempt=$((attempt + 1))
+            sleep $((2 ** attempt))
+        done
+        
+        echo "Max retries exceeded" >&2
+        return 1
+    }
+
+    # Usage
+    result=$(request_with_retry POST "https://api.covosign.com/api/v1/endpoint" '{"key": "value"}')
+    ```
+  </TabItem>
+</Tabs>

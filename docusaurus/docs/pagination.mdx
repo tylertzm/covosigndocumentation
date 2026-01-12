@@ -1,0 +1,66 @@
+---
+title: "Pagination & Filters"
+---
+
+# Pagination & Filters
+
+When you have a lot of data, like a list of signature requests, you can't load everything at once. Pagination breaks it into pages, like chapters in a book. Filters let you find specific items, like searching for requests from a certain date or status. It's like using search and page numbers on a website to find what you need quickly.
+
+Retrieve large datasets efficiently with pagination and targeted filters (status, date ranges, recipient email, and more).
+
+## Pagination
+
+The API uses standard page-based pagination to navigate result sets. This allows random access to pages and sorting.
+
+### Common Parameters
+- `page`: Page number (0-indexed, default: 0)
+- `size`: Items per page (default: 20, max: 100)
+- `sort`: Sorting criteria (e.g. `createdAt,desc`)
+
+```json
+{ 
+  "code": 200, 
+  "statusText": "OK", 
+  "message": "Requests retrieved successfully", 
+  "data": { 
+    "content": [{ "id": "req_123", "status": "COMPLETED" }], 
+    "pageable": { 
+      "pageNumber": 0, 
+      "pageSize": 20, 
+      "sort": { "sorted": false, "unsorted": true, "empty": true }, 
+      "offset": 0, 
+      "paged": true, 
+      "unpaged": false 
+    }, 
+    "totalPages": 8, 
+    "totalElements": 150, 
+    "last": false, 
+    "first": true, 
+    "size": 20, 
+    "number": 0, 
+    "numberOfElements": 20, 
+    "empty": false 
+  } 
+}
+```
+
+## Filtering
+
+### Request Filters
+- `status`
+- `createdAfter`
+- `recipientEmail`
+- `search`
+
+### Recipient Filters
+- `status`
+- `email`
+- `role`
+
+### Example Usage
+
+```http
+GET /api/v1/signature-requests?status=COMPLETED&createdAfter=2024-01-01T00:00:00Z&page=0&size=50
+```
+
+Use filters to narrow by status, email, title, and date ranges. Keep `size` between 20-100 for best performance.

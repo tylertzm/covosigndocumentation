@@ -1,0 +1,64 @@
+---
+title: "Rate Limits"
+---
+
+# Rate Limits
+
+Rate limits are like speed limits on the road. They prevent any one user from making too many requests too quickly, which could slow down the service for everyone. CovoSign allows a certain number of requests per minute, and if you go over, you have to wait. It's to keep things fair and fast for all users.
+
+To ensure fair usage and stability, CovoSign implements rate limiting per API key and environment. Limits are enforced using a Redis-based sliding window mechanism to ensure consistent performance.
+
+## Limits by Environment
+
+### Production <span className="badge badge--success">LIVE</span>
+- **100 req/min** Per API Key
+- Prefix: `csk_live_*`
+
+### Sandbox <span className="badge badge--success">TEST</span>
+- **100 req/min** Per API Key (Default)
+- Configurable via `SANDBOX_RATE_LIMIT` environment variable.
+- Prefix: `csk_sandbox_*`
+
+## Implementation Details
+
+### Redis-Based Sliding Window
+Rate limiting is implemented using a **Redis-based sliding window**. Each API request increments a counter (`INCR` operation) associated with your API key for the current minute. If the counter exceeds the limit, further requests are blocked until the next window begins.
+
+## API Key Quotas
+
+### Sandbox Keys
+- **Max Active Keys:** 3
+- *No Enterprise plan required*
+
+### Production Keys
+- **Max Active Keys:** 5
+- *Enterprise plan required*
+
+> **Quota Validation:** Quotas are strictly enforced during key creation. You will receive a specific error message if you attempt to create more keys than your plan allows.
+
+## Billing & Custom Limits
+
+Limits are integrated with your organization's **Billing Plan**. While the standard limits are fixed, the infrastructure supports custom configurations for Enterprise customers.
+
+- **Quota Storage:** Stored in `BillingPlan.quotaDefaults` JSON field.
+- **Future Customization:** Plans can define custom `productionApiKeysPerAccount` and `apiKeyRateLimit`.
+
+## Response Headers
+
+Every API response includes headers to help you monitor your current usage.
+
+| Header | Description |
+| :--- | :--- |
+| `X-RateLimit-Limit` | Maximum requests allowed per minute window |
+| `X-RateLimit-Remaining` | Requests remaining in the current window |
+| `X-RateLimit-Reset` | Unix timestamp when the window resets |
+
+Monitor these headers to adjust client throughput. Use backoff or queuing when remaining capacity is low.
+
+## Exceeded Limits
+
+### 429 Too Many Requests
+
+If you exceed the rate limit, the API will return a 429 status code. The response will include a `Retry-After` header indicating how many seconds to wait.
+
+> **Best Practice:** Implement exponential backoff, honor `Retry-After`, and spread bursts to stay within limits.

@@ -1,0 +1,89 @@
+---
+title: "Idempotency"
+---
+
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
+
+# Idempotency
+
+Idempotency is a fancy word that means 'doing something once, even if you try multiple times'. It's like pressing a button that only works once. In APIs, it prevents creating the same thing twice if your request gets sent multiple times due to network issues. You use a special key to identify your request uniquely.
+
+Prevent duplicate actions by attaching idempotency keys. Retries return the original result instead of creating new requests.
+
+## Implementation
+
+Provide a unique key in the header. Keys expire after 24 hours.
+
+```http
+Idempotency-Key: 550e8400-e29b-41d4-a716-446655440000
+```
+
+### Conflict Response (409)
+
+```json
+{ "code": 409, "statusText": "Conflict", "message": "Request already processed with this idempotency key" }
+```
+
+## Client Example
+
+<Tabs>
+  <TabItem value="javascript" label="Node.js" default>
+    ```javascript
+    const crypto = require('crypto');
+
+    function generateIdempotencyKey(data) {
+      const hash = crypto.createHash('md5').update(JSON.stringify(data)).digest('hex');
+      return `req_${hash}`;
+    }
+    ```
+  </TabItem>
+  <TabItem value="python" label="Python">
+    ```python
+    import hashlib
+    import json
+
+    def generate_idempotency_key(data):
+        hash_obj = hashlib.md5(json.dumps(data, sort_keys=True).encode())
+        return f"req_{hash_obj.hexdigest()}"
+    ```
+  </TabItem>
+  <TabItem value="java" label="Java">
+    ```java
+    import java.security.MessageDigest;
+    import java.nio.charset.StandardCharsets;
+    import com.fasterxml.jackson.core.JsonProcessingException;
+    import com.fasterxml.jackson.databind.ObjectMapper;
+
+    public String generateIdempotencyKey(Object data) throws JsonProcessingException {
+        ObjectMapper mapper = new ObjectMapper();
+        String json = mapper.writeValueAsString(data);
+        MessageDigest md = MessageDigest.getInstance("MD5");
+        byte[] hash = md.digest(json.getBytes(StandardCharsets.UTF_8));
+        StringBuilder sb = new StringBuilder();
+        for (byte b : hash) {
+            sb.append(String.format("%02x", b));
+        }
+        return "req_" + sb.toString();
+    }
+    ```
+  </TabItem>
+  <TabItem value="bash" label="Bash">
+    ```bash
+    # Generate idempotency key from data
+    generate_idempotency_key() {
+        local data="$1"
+        local hash=$(echo -n "$data" | md5sum | cut -d' ' -f1)
+        echo "req_$hash"
+    }
+
+    # Usage
+    key=$(generate_idempotency_key '{"action":"create","payload":{"name":"test"}}')
+    ```
+  </TabItem>
+</Tabs>
+
+### Best practices
+- Generate the key from stable inputs (operation + payload hash).
+- Reuse the same key when retrying a request.
+- Expect a 409 conflict if the exact request was already processed.

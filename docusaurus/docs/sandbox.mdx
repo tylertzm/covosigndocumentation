@@ -1,0 +1,112 @@
+---
+title: "Sandbox Environment"
+---
+
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
+
+# Sandbox Environment
+
+The sandbox is like a practice playground for your code. You can test your app with CovoSign without affecting real documents or people. It's safe to make mistakes here, and data gets cleaned up after 30 days. Use it to learn and debug before going live with real signatures.
+
+Isolated testing environment mirroring production functionality using mock data. Designed for development and integration testing.
+
+## Environment URLs
+
+| Environment | Base URL | Purpose |
+| :--- | :--- | :--- |
+| **Production** | `https://api.covosign.com` | Live signatures |
+| **Sandbox** | `https://api-sandbox.covosign.com` | Testing & Dev |
+
+## Usage Limits & Retention
+
+### Sandbox Constraints
+- **30-day Data Retention** (auto-cleanup)
+- **500 lifetime signature request sends** per user (sandbox)
+- **5MB File Size Limit**
+- **Rate Limit:** 1,000 req/min
+- **Emails are delivered** (good for test addresses)
+- **Exact feature parity with production**
+
+### Production Specs
+- **Permanent Retention**
+- **Unlimited requests** (plan based)
+- **Rate Limit:** 100 req/min (Standard)
+- **Real Email Delivery**
+
+## Testing Strategy
+
+<Tabs>
+  <TabItem value="javascript" label="Node.js" default>
+    ```javascript
+    const axios = require('axios');
+
+    // Initialize Sandbox Client
+    const sandboxClient = axios.create({
+      baseURL: 'https://api-sandbox.covosign.com/api/v1/enterprise',
+      headers: { 'X-API-Key': 'csk_sandbox_...' }
+    });
+
+    // Create Test Request
+    async function createTestRequest() {
+      const response = await sandboxClient.post('/signature-requests', {
+        title: 'Test Agreement',
+        recipients: [{ email: 'test@example.com', name: 'Test User', role: 'SIGNER', order: 1 }],
+        delivery_mode: 'email'
+      });
+      return response.data;
+    }
+    ```
+  </TabItem>
+  <TabItem value="python" label="Python">
+    ```python
+    import requests
+
+    # Initialize Sandbox Client
+    class SandboxClient:
+        def __init__(self, api_key):
+            self.base_url = 'https://api-sandbox.covosign.com/api/v1/enterprise'
+            self.headers = {'X-API-Key': api_key}
+
+        def create_signature_request(self, title, recipients):
+            url = f"{self.base_url}/signature-requests"
+            payload = {
+                "title": title,
+                "recipients": recipients,
+                "delivery_mode": "email"
+            }
+            response = requests.post(url, headers=self.headers, json=payload)
+            return response.json()
+
+    # Usage
+    client = SandboxClient('csk_sandbox_...')
+    result = client.create_signature_request(
+        'Test Agreement',
+        [{'email': 'test@example.com', 'name': 'Test User', 'role': 'SIGNER', 'order': 1}]
+    )
+    ```
+  </TabItem>
+  <TabItem value="bash" label="Bash">
+    ```bash
+    # Create test signature request
+    curl -X POST "https://api-sandbox.covosign.com/api/v1/enterprise/signature-requests" \
+      -H "X-API-Key: csk_sandbox_..." \
+      -H "Content-Type: application/json" \
+      -d '{
+        "title": "Test Agreement",
+        "recipients": [
+          {
+            "email": "test@example.com",
+            "name": "Test User",
+            "role": "SIGNER",
+            "order": 1
+          }
+        ],
+        "delivery_mode": "email"
+      }'
+    ```
+  </TabItem>
+</Tabs>
+
+### Migrating to production
+Swap the base URL to `https://api.covosign.com` and use production API keys. Keep the same payloads and workflows.

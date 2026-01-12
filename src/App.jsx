@@ -172,7 +172,7 @@ export default function App() {
         />
       )}
 
-      <nav className="border-b border-slate-200 sticky top-0 bg-white/80 backdrop-blur z-20 shrink-0">
+      <nav className="border-b border-white/30 sticky top-0 bg-white/20 backdrop-blur-xl z-20 shrink-0">
         <div className="max-w-6xl mx-auto px-6 h-16 flex items-center justify-between">
           <div className="flex items-center gap-8">
             <div
@@ -186,7 +186,7 @@ export default function App() {
             <div className="hidden md:flex items-center gap-6 text-sm font-medium">
               <button
                 onClick={() => setActiveTab("resources")}
-                className={`${activeTab === "resources" ? "text-blue-600" : "text-slate-500 hover:text-slate-800"} transition-colors`}
+                className={`${activeTab === "resources" ? "text-slate-900" : "text-slate-700 hover:text-slate-900"} transition-colors`}
               >
                 Resources
               </button>
@@ -195,7 +195,7 @@ export default function App() {
                   setActiveTab("documentation");
                   setCurrentView("guide");
                 }}
-                className={`${activeTab === "documentation" ? "text-blue-600" : "text-slate-500 hover:text-slate-800"} transition-colors`}
+                className={`${activeTab === "documentation" ? "text-slate-900" : "text-slate-700 hover:text-slate-900"} transition-colors`}
               >
                 Documentation
               </button>
@@ -203,7 +203,7 @@ export default function App() {
                 href="https://api-staging.covosign.com/redoc#section/CovoSign-Enterprise-API/Authentication"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-slate-500 hover:text-slate-800 transition-colors"
+                className="text-slate-700 hover:text-slate-900 transition-colors"
               >
                 API Reference
               </a>

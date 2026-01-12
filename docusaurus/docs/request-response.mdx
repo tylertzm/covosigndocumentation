@@ -1,0 +1,41 @@
+---
+title: "Request/Response Formats"
+---
+
+# Request/Response Formats
+
+When you talk to an API, you need to know how to send your messages (requests) and understand the replies (responses). CovoSign uses JSON format for data, like sending notes in a standard envelope. This makes it easy for your code to read and write the information without confusion.
+
+## Standards
+
+### Content Types
+- `application/json` for bodies
+- `multipart/form-data` for files
+
+### Data Formats
+- **Dates:** ISO 8601 (`2025-12-10T10:30:00Z`)
+- **IDs:** RFC 4122 UUID v4
+
+## Response Wrapper
+
+All API responses follow a consistent envelope format so you can handle success, errors, and metadata uniformly.
+
+```json
+{ 
+  "code": 200, 
+  "statusText": "OK", 
+  "message": "Request retrieved successfully", 
+  "data": { 
+    "id": "req_12345", 
+    "status": "COMPLETED" 
+  } 
+}
+```
+
+The same pattern applies across endpoints, making it easier to parse results, surface errors, and trace requests.
+
+### Identifiers
+IDs are UUID v4. Use them as opaque strings; avoid inferring meaning from prefixes.
+
+### Timestamps
+All dates are ISO 8601 with timezone (Z). Store and compare as UTC; render in local time as needed.
