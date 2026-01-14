@@ -103,6 +103,49 @@ WEBHOOK_SECRET=your_webhook_secret_here
     }
     ```
   </TabItem>
+  <TabItem value="java" label="Java">
+    ```java
+    import org.springframework.web.client.RestTemplate;
+    import org.springframework.core.io.FileSystemResource;
+    import org.springframework.http.HttpHeaders;
+    import org.springframework.http.HttpEntity;
+    import org.springframework.http.MediaType;
+    import org.springframework.util.LinkedMultiValueMap;
+    import org.springframework.util.MultiValueMap;
+
+    // Using Spring's RestTemplate
+    public class CovoSignClient {
+        private final RestTemplate restTemplate = new RestTemplate();
+        private final String baseUrl;
+        private final String apiKey;
+        
+        public CovoSignClient(String baseUrl, String apiKey) {
+            this.baseUrl = baseUrl;
+            this.apiKey = apiKey;
+        }
+        
+        public String createSignatureRequest() {
+            String url = baseUrl + "/signature-requests";
+            
+            HttpHeaders headers = new HttpHeaders();
+            headers.set("X-API-Key", apiKey);
+            
+            MultiValueMap<String, Object> body = new LinkedMultiValueMap<>();
+            body.add("documentFile", new FileSystemResource("test.pdf"));
+            body.add("title", "Test Document");
+            body.add("delivery_mode", "email");
+            
+            HttpEntity<MultiValueMap<String, Object>> entity = new HttpEntity<>(body, headers);
+            
+            return restTemplate.postForObject(url, entity, String.class);
+        }
+    }
+
+    // Usage
+    CovoSignClient client = new CovoSignClient(System.getenv("BASE_URL"), System.getenv("API_KEY"));
+    String result = client.createSignatureRequest();
+    ```
+  </TabItem>
   <TabItem value="bash" label="Bash">
     ```bash
     curl -X POST "${BASE_URL}/signature-requests" \
@@ -179,6 +222,49 @@ WEBHOOK_SECRET=your_webhook_secret_here
         console.error('Error adding recipient:', error.response.data);
       }
     }
+    ```
+  </TabItem>
+  <TabItem value="java" label="Java">
+    ```java
+    import org.springframework.web.client.RestTemplate;
+    import org.springframework.http.HttpHeaders;
+    import org.springframework.http.HttpEntity;
+    import org.springframework.http.MediaType;
+    import com.fasterxml.jackson.databind.ObjectMapper;
+
+    public class CovoSignClient {
+        private final RestTemplate restTemplate = new RestTemplate();
+        private final ObjectMapper objectMapper = new ObjectMapper();
+        private final String baseUrl;
+        private final String apiKey;
+        
+        public CovoSignClient(String baseUrl, String apiKey) {
+            this.baseUrl = baseUrl;
+            this.apiKey = apiKey;
+        }
+        
+        public String addRecipient(String requestId) throws Exception {
+            String url = baseUrl + "/signature-requests/" + requestId + "/recipients";
+            
+            HttpHeaders headers = new HttpHeaders();
+            headers.set("X-API-Key", apiKey);
+            headers.setContentType(MediaType.APPLICATION_JSON);
+            
+            Map<String, Object> payload = new HashMap<>();
+            payload.put("email", "tyler@example.com");
+            payload.put("name", "Tyler Tan");
+            payload.put("role", "SIGNER");
+            payload.put("order", 1);
+            
+            HttpEntity<String> entity = new HttpEntity<>(objectMapper.writeValueAsString(payload), headers);
+            
+            return restTemplate.postForObject(url, entity, String.class);
+        }
+    }
+
+    // Usage
+    CovoSignClient client = new CovoSignClient(System.getenv("BASE_URL"), System.getenv("API_KEY"));
+    String result = client.addRecipient("request-id-here");
     ```
   </TabItem>
   <TabItem value="bash" label="Bash">
@@ -264,6 +350,53 @@ WEBHOOK_SECRET=your_webhook_secret_here
     }
     ```
   </TabItem>
+  <TabItem value="java" label="Java">
+    ```java
+    import org.springframework.web.client.RestTemplate;
+    import org.springframework.http.HttpHeaders;
+    import org.springframework.http.HttpEntity;
+    import org.springframework.http.MediaType;
+    import com.fasterxml.jackson.databind.ObjectMapper;
+
+    public class CovoSignClient {
+        private final RestTemplate restTemplate = new RestTemplate();
+        private final ObjectMapper objectMapper = new ObjectMapper();
+        private final String baseUrl;
+        private final String apiKey;
+        
+        public CovoSignClient(String baseUrl, String apiKey) {
+            this.baseUrl = baseUrl;
+            this.apiKey = apiKey;
+        }
+        
+        public String addSignatureField(String requestId, String recipientId) throws Exception {
+            String url = baseUrl + "/signature-requests/" + requestId + "/fields";
+            
+            HttpHeaders headers = new HttpHeaders();
+            headers.set("X-API-Key", apiKey);
+            headers.setContentType(MediaType.APPLICATION_JSON);
+            
+            Map<String, Object> field = new HashMap<>();
+            field.put("type", "SIGNATURE");
+            field.put("page", 1);
+            field.put("x", 100);
+            field.put("y", 200);
+            field.put("width", 200);
+            field.put("height", 50);
+            field.put("name", "Signature_1");
+            field.put("recipientId", recipientId);
+            
+            HttpEntity<String> entity = new HttpEntity<>(objectMapper.writeValueAsString(field), headers);
+            
+            return restTemplate.postForObject(url, entity, String.class);
+        }
+    }
+
+    // Usage
+    CovoSignClient client = new CovoSignClient(System.getenv("BASE_URL"), System.getenv("API_KEY"));
+    String result = client.addSignatureField("request-id", "recipient-id");
+    ```
+  </TabItem>
   <TabItem value="bash" label="Bash">
     ```bash
     curl -X POST "${BASE_URL}/signature-requests/${REQUEST_ID}/fields" \
@@ -336,6 +469,45 @@ WEBHOOK_SECRET=your_webhook_secret_here
         return false;
       }
     }
+    ```
+  </TabItem>
+  <TabItem value="java" label="Java">
+    ```java
+    import org.springframework.web.client.RestTemplate;
+    import org.springframework.http.HttpHeaders;
+    import org.springframework.http.HttpEntity;
+
+    public class CovoSignClient {
+        private final RestTemplate restTemplate = new RestTemplate();
+        private final String baseUrl;
+        private final String apiKey;
+        
+        public CovoSignClient(String baseUrl, String apiKey) {
+            this.baseUrl = baseUrl;
+            this.apiKey = apiKey;
+        }
+        
+        public boolean sendSignatureRequest(String requestId) {
+            String url = baseUrl + "/signature-requests/" + requestId + "/send";
+            
+            HttpHeaders headers = new HttpHeaders();
+            headers.set("X-API-Key", apiKey);
+            
+            HttpEntity<String> entity = new HttpEntity<>(headers);
+            
+            try {
+                restTemplate.postForObject(url, entity, String.class);
+                return true;
+            } catch (Exception e) {
+                System.err.println("Error sending signature request: " + e.getMessage());
+                return false;
+            }
+        }
+    }
+
+    // Usage
+    CovoSignClient client = new CovoSignClient(System.getenv("BASE_URL"), System.getenv("API_KEY"));
+    boolean success = client.sendSignatureRequest("request-id-here");
     ```
   </TabItem>
   <TabItem value="bash" label="Bash">

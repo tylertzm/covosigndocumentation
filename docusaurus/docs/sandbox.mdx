@@ -86,6 +86,49 @@ Isolated testing environment mirroring production functionality using mock data.
     )
     ```
   </TabItem>
+  <TabItem value="java" label="Java">
+    ```java
+    import org.springframework.web.client.RestTemplate;
+    import org.springframework.http.HttpHeaders;
+    import org.springframework.http.HttpEntity;
+    import org.springframework.http.ResponseEntity;
+    import com.fasterxml.jackson.databind.ObjectMapper;
+
+    // Initialize Sandbox Client
+    public class SandboxClient {
+        private final String baseUrl = "https://api-sandbox.covosign.com/api/v1/enterprise";
+        private final RestTemplate restTemplate = new RestTemplate();
+        private final ObjectMapper objectMapper = new ObjectMapper();
+        
+        public SandboxClient(String apiKey) {
+            this.apiKey = apiKey;
+        }
+        
+        public String createSignatureRequest(String title, List<Map<String, Object>> recipients) throws Exception {
+            String url = baseUrl + "/signature-requests";
+            HttpHeaders headers = new HttpHeaders();
+            headers.set("X-API-Key", apiKey);
+            headers.set("Content-Type", "application/json");
+            
+            Map<String, Object> payload = new HashMap<>();
+            payload.put("title", title);
+            payload.put("recipients", recipients);
+            payload.put("delivery_mode", "email");
+            
+            HttpEntity<String> entity = new HttpEntity<>(objectMapper.writeValueAsString(payload), headers);
+            ResponseEntity<String> response = restTemplate.postForEntity(url, entity, String.class);
+            return response.getBody();
+        }
+    }
+
+    // Usage
+    SandboxClient client = new SandboxClient("csk_sandbox_...");
+    List<Map<String, Object>> recipients = Arrays.asList(
+        Map.of("email", "test@example.com", "name", "Test User", "role", "SIGNER", "order", 1)
+    );
+    String result = client.createSignatureRequest("Test Agreement", recipients);
+    ```
+  </TabItem>
   <TabItem value="bash" label="Bash">
     ```bash
     # Create test signature request

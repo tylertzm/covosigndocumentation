@@ -86,6 +86,57 @@ When API calls fail due to transient issues (like network problems or temporary 
         raise Exception('Max retries exceeded')
     ```
   </TabItem>
+  <TabItem value="java" label="Java">
+    ```java
+    import org.springframework.web.client.RestTemplate;
+    import org.springframework.web.client.HttpClientErrorException;
+    import org.springframework.web.client.HttpServerErrorException;
+    import org.springframework.http.HttpHeaders;
+    import org.springframework.http.HttpEntity;
+    import org.springframework.http.ResponseEntity;
+    import com.fasterxml.jackson.databind.ObjectMapper;
+
+    public class ApiClient {
+        private final RestTemplate restTemplate = new RestTemplate();
+        private final ObjectMapper objectMapper = new ObjectMapper();
+        private final String apiKey;
+        
+        public ApiClient(String apiKey) {
+            this.apiKey = apiKey;
+        }
+        
+        public <T> T requestWithRetry(String method, String url, Object data, Class<T> responseType, int maxRetries) throws Exception {
+            int attempt = 0;
+            while (attempt < maxRetries) {
+                try {
+                    HttpHeaders headers = new HttpHeaders();
+                    headers.set("X-API-Key", apiKey);
+                    headers.set("Content-Type", "application/json");
+                    
+                    String jsonData = objectMapper.writeValueAsString(data);
+                    HttpEntity<String> entity = new HttpEntity<>(jsonData, headers);
+                    
+                    ResponseEntity<T> response = restTemplate.exchange(url, 
+                        org.springframework.http.HttpMethod.valueOf(method.toUpperCase()), 
+                        entity, responseType);
+                    return response.getBody();
+                } catch (HttpClientErrorException e) {
+                    throw e; // Don't retry client errors
+                } catch (HttpServerErrorException e) {
+                    attempt++;
+                    Thread.sleep((long) (Math.pow(2, attempt) * 1000));
+                }
+            }
+            throw new Exception("Max retries exceeded");
+        }
+    }
+
+    // Usage
+    ApiClient client = new ApiClient(System.getenv("API_KEY"));
+    Map<String, Object> data = Map.of("key", "value");
+    String result = client.requestWithRetry("POST", "https://api.covosign.com/api/v1/endpoint", data, String.class, 3);
+    ```
+  </TabItem>
   <TabItem value="bash" label="Bash">
     ```bash
     #!/bin/bash

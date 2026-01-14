@@ -1,0 +1,1151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CovoSign Docusaurus - Syntax & Design Decisions Report</title>
+    <style>
+        :root {
+            --primary: #2e8555;
+            --primary-dark: #1a5235;
+            --bg-light: #f8fafc;
+            --bg-code: #1e293b;
+            --text: #1e293b;
+            --text-muted: #64748b;
+            --border: #e2e8f0;
+            --custom-tag: #8b5cf6;
+            --default-tag: #3b82f6;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+            line-height: 1.6;
+            color: var(--text);
+            background: var(--bg-light);
+        }
+        
+        .container {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+        
+        header {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            color: white;
+            padding: 60px 20px;
+            text-align: center;
+        }
+        
+        header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+        }
+        
+        header p {
+            opacity: 0.9;
+            font-size: 1.1rem;
+        }
+        
+        .meta {
+            margin-top: 20px;
+            font-size: 0.9rem;
+            opacity: 0.8;
+        }
+        
+        .toc {
+            background: white;
+            border-radius: 12px;
+            padding: 24px;
+            margin-bottom: 32px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+        
+        .toc h2 {
+            font-size: 1.25rem;
+            margin-bottom: 16px;
+            color: var(--primary);
+        }
+        
+        .toc ul {
+            list-style: none;
+        }
+        
+        .toc li {
+            padding: 8px 0;
+            border-bottom: 1px solid var(--border);
+        }
+        
+        .toc li:last-child {
+            border-bottom: none;
+        }
+        
+        .toc a {
+            color: var(--text);
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .toc a:hover {
+            color: var(--primary);
+        }
+        
+        section {
+            background: white;
+            border-radius: 12px;
+            padding: 32px;
+            margin-bottom: 24px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+        
+        h2 {
+            font-size: 1.5rem;
+            color: var(--primary);
+            margin-bottom: 16px;
+            padding-bottom: 12px;
+            border-bottom: 2px solid var(--border);
+        }
+        
+        h3 {
+            font-size: 1.15rem;
+            color: var(--text);
+            margin: 24px 0 12px 0;
+        }
+        
+        p {
+            margin-bottom: 16px;
+            color: var(--text-muted);
+        }
+        
+        .tag {
+            display: inline-block;
+            padding: 2px 10px;
+            border-radius: 12px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        .tag-custom {
+            background: #ede9fe;
+            color: var(--custom-tag);
+        }
+        
+        .tag-default {
+            background: #dbeafe;
+            color: var(--default-tag);
+        }
+        
+        .tag-plugin {
+            background: #fef3c7;
+            color: #d97706;
+        }
+        
+        .code-block {
+            background: var(--bg-code);
+            border-radius: 8px;
+            padding: 20px;
+            margin: 16px 0;
+            overflow-x: auto;
+        }
+        
+        .code-block code {
+            color: #e2e8f0;
+            font-family: 'SF Mono', Monaco, 'Courier New', monospace;
+            font-size: 0.9rem;
+            line-height: 1.7;
+        }
+        
+        .code-block .comment {
+            color: #64748b;
+        }
+        
+        .code-block .keyword {
+            color: #c084fc;
+        }
+        
+        .code-block .string {
+            color: #86efac;
+        }
+        
+        .code-block .tag-name {
+            color: #f472b6;
+        }
+        
+        .code-block .attr {
+            color: #67e8f9;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 16px 0;
+        }
+        
+        th, td {
+            padding: 12px 16px;
+            text-align: left;
+            border-bottom: 1px solid var(--border);
+        }
+        
+        th {
+            background: var(--bg-light);
+            font-weight: 600;
+            color: var(--text);
+        }
+        
+        tr:hover {
+            background: var(--bg-light);
+        }
+        
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+            margin: 20px 0;
+        }
+        
+        .feature-card {
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 20px;
+        }
+        
+        .feature-card h4 {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 8px;
+        }
+        
+        .feature-card p {
+            font-size: 0.9rem;
+            margin: 0;
+        }
+        
+        .file-ref {
+            display: inline-block;
+            background: var(--bg-light);
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-family: monospace;
+            font-size: 0.85rem;
+            color: var(--primary);
+        }
+        
+        .note {
+            background: #fef3c7;
+            border-left: 4px solid #f59e0b;
+            padding: 16px;
+            border-radius: 0 8px 8px 0;
+            margin: 16px 0;
+        }
+        
+        .note-title {
+            font-weight: 600;
+            color: #92400e;
+            margin-bottom: 4px;
+        }
+        
+        .note p {
+            color: #78350f;
+            margin: 0;
+        }
+        
+        .comparison {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+            margin: 16px 0;
+        }
+        
+        .comparison > div {
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 16px;
+        }
+        
+        .comparison h4 {
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        @media (max-width: 768px) {
+            .comparison {
+                grid-template-columns: 1fr;
+            }
+            
+            header h1 {
+                font-size: 1.75rem;
+            }
+        }
+        
+        footer {
+            text-align: center;
+            padding: 40px 20px;
+            color: var(--text-muted);
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>📘 CovoSign Docusaurus Syntax Report</h1>
+        <p>Design Decisions & Implementation Guide</p>
+        <div class="meta">Generated: January 14, 2026 | Docusaurus v3.9.2</div>
+    </header>
+    
+    <div class="container">
+        <nav class="toc">
+            <h2>📑 Table of Contents</h2>
+            <ul>
+                <li><a href="#template-setup">1. Template Setup & Configuration</a></li>
+                <li><a href="#overview">2. Project Overview</a></li>
+                <li><a href="#frontmatter">3. MDX Frontmatter</a></li>
+                <li><a href="#tabs">4. Tabs Component</a></li>
+                <li><a href="#mermaid">5. Mermaid Diagrams</a></li>
+                <li><a href="#codeblocks">6. Code Blocks</a></li>
+                <li><a href="#sidebar">7. Sidebar Configuration</a></li>
+                <li><a href="#components">8. Custom React Components</a></li>
+                <li><a href="#theming">9. Theming & CSS</a></li>
+                <li><a href="#summary">10. Summary Table</a></li>
+                <li><a href="#distribution-summary">11. Feature Distribution Summary</a></li>
+            </ul>
+        </nav>
+
+        <section id="template-setup">
+            <h2>1. Template Setup & Configuration <span class="tag tag-default">Default Template</span></h2>
+            <p>This Docusaurus project was scaffolded using the official <strong>Classic Template</strong> provided by the Docusaurus CLI. The template includes a pre-configured setup with essential features for documentation sites.</p>
+            
+            <h3>🚀 Installation Command</h3>
+            <p>The project was initialized using the following command:</p>
+            <div class="code-block">
+                <code>
+<span class="keyword">npx</span> create-docusaurus@latest docusaurus <span class="string">classic</span>
+                </code>
+            </div>
+            
+            <h3>📁 Template Directory Structure</h3>
+            <p>The classic template provides the following pre-configured directory structure:</p>
+            
+            <table>
+                <thead>
+                    <tr>
+                        <th>Directory/File</th>
+                        <th>Purpose</th>
+                        <th>Template Included</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><code>docusaurus.config.js</code></td>
+                        <td>Main configuration file for site metadata, themes, and plugins</td>
+                        <td><span class="tag tag-default">Yes</span></td>
+                    </tr>
+                    <tr>
+                        <td><code>sidebars.js</code></td>
+                        <td>Sidebar navigation configuration</td>
+                        <td><span class="tag tag-default">Yes</span></td>
+                    </tr>
+                    <tr>
+                        <td><code>package.json</code></td>
+                        <td>Dependencies and npm scripts</td>
+                        <td><span class="tag tag-default">Yes</span></td>
+                    </tr>
+                    <tr>
+                        <td><code>docs/</code></td>
+                        <td>Documentation content (MDX/MD files)</td>
+                        <td><span class="tag tag-default">Yes</span></td>
+                    </tr>
+                    <tr>
+                        <td><code>src/pages/</code></td>
+                        <td>Custom standalone pages (React or Markdown)</td>
+                        <td><span class="tag tag-default">Yes</span></td>
+                    </tr>
+                    <tr>
+                        <td><code>src/components/</code></td>
+                        <td>Reusable React components</td>
+                        <td><span class="tag tag-default">Yes</span></td>
+                    </tr>
+                    <tr>
+                        <td><code>src/css/custom.css</code></td>
+                        <td>Custom CSS overrides and theme variables</td>
+                        <td><span class="tag tag-default">Yes</span></td>
+                    </tr>
+                    <tr>
+                        <td><code>static/</code></td>
+                        <td>Static assets (images, favicons, etc.)</td>
+                        <td><span class="tag tag-default">Yes</span></td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h3>⚙️ Classic Preset Configuration</h3>
+            <p>The template uses <code>@docusaurus/preset-classic</code> which bundles several plugins together:</p>
+            
+            <div class="feature-grid">
+                <div class="feature-card">
+                    <h4>📚 Docs Plugin</h4>
+                    <p>Content management for documentation with versioning support, sidebar generation, and MDX processing.</p>
+                </div>
+                <div class="feature-card">
+                    <h4> Pages Plugin</h4>
+                    <p>Create standalone pages using React components or Markdown files.</p>
+                </div>
+                <div class="feature-card">
+                    <h4>🎨 Classic Theme</h4>
+                    <p>Pre-built UI components including navbar, footer, search, dark mode, and responsive layouts.</p>
+                </div>
+            </div>
+
+            <h3>📦 Template Dependencies</h3>
+            <div class="code-block">
+                <code>
+<span class="comment">// package.json - Core dependencies from template</span><br>
+{<br>
+&nbsp;&nbsp;<span class="string">"@docusaurus/core"</span>: <span class="string">"3.9.2"</span>,<br>
+&nbsp;&nbsp;<span class="string">"@docusaurus/preset-classic"</span>: <span class="string">"3.9.2"</span>,<br>
+&nbsp;&nbsp;<span class="string">"@mdx-js/react"</span>: <span class="string">"^3.0.0"</span>,<br>
+&nbsp;&nbsp;<span class="string">"clsx"</span>: <span class="string">"^2.0.0"</span>,<br>
+&nbsp;&nbsp;<span class="string">"prism-react-renderer"</span>: <span class="string">"^2.3.0"</span>,<br>
+&nbsp;&nbsp;<span class="string">"react"</span>: <span class="string">"^19.0.0"</span>,<br>
+&nbsp;&nbsp;<span class="string">"react-dom"</span>: <span class="string">"^19.0.0"</span><br>
+}
+                </code>
+            </div>
+
+            <h3>🛠️ NPM Scripts (from Template)</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Command</th>
+                        <th>Purpose</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><code>npm start</code></td>
+                        <td>Start local development server with hot reload</td>
+                    </tr>
+                    <tr>
+                        <td><code>npm run build</code></td>
+                        <td>Generate static production build</td>
+                    </tr>
+                    <tr>
+                        <td><code>npm run serve</code></td>
+                        <td>Serve the production build locally</td>
+                    </tr>
+                    <tr>
+                        <td><code>npm run swizzle</code></td>
+                        <td>Customize theme components</td>
+                    </tr>
+                    <tr>
+                        <td><code>npm run deploy</code></td>
+                        <td>Deploy to GitHub Pages</td>
+                    </tr>
+                    <tr>
+                        <td><code>npm run clear</code></td>
+                        <td>Clear generated files and caches</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div class="note">
+                <div class="note-title">💡 Template Customization</div>
+                <p>While the classic template provides an excellent starting point, this CovoSign project has customized the <code>src/pages/index.js</code> homepage, added custom React components in <code>src/components/</code>, and replaced the default docs with API documentation content.</p>
+            </div>
+        </section>
+
+        <section id="overview">
+            <h2>2. Project Overview</h2>
+            <p>This report documents the syntax patterns and design decisions used in the CovoSign Docusaurus documentation site, distinguishing between Docusaurus default features and custom implementations.</p>
+            
+            <div class="feature-grid">
+                <div class="feature-card">
+                    <h4>📦 Framework</h4>
+                    <p>Docusaurus 3.9.2 with Classic Preset</p>
+                </div>
+                <div class="feature-card">
+                    <h4>⚛️ React Version</h4>
+                    <p>React 19.0.0</p>
+                </div>
+                <div class="feature-card">
+                    <h4>📝 Content Format</h4>
+                    <p>MDX (Markdown + JSX)</p>
+                </div>
+                <div class="feature-card">
+                    <h4>🎨 CSS Framework</h4>
+                    <p>Infima (Docusaurus default)</p>
+                </div>
+            </div>
+        </section>
+
+        <section id="frontmatter">
+            <h2>3. MDX Frontmatter <span class="tag tag-default">Default</span></h2>
+            <p>Frontmatter is YAML metadata at the top of MDX files. This is a <strong>standard Docusaurus feature</strong> used to configure page metadata.</p>
+            
+            <div class="code-block">
+                <code>
+<span class="comment">---</span><br>
+<span class="keyword">title:</span> <span class="string">"Quick Start"</span><br>
+<span class="keyword">sidebar_position:</span> <span class="string">2</span><br>
+<span class="comment">---</span>
+                </code>
+            </div>
+            
+            <h3>Common Frontmatter Fields</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Field</th>
+                        <th>Purpose</th>
+                        <th>Source</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><code>title</code></td>
+                        <td>Page title displayed in browser tab and sidebar</td>
+                        <td><span class="tag tag-default">Default</span></td>
+                    </tr>
+                    <tr>
+                        <td><code>sidebar_position</code></td>
+                        <td>Order of page in sidebar navigation</td>
+                        <td><span class="tag tag-default">Default</span></td>
+                    </tr>
+                    <tr>
+                        <td><code>sidebar_label</code></td>
+                        <td>Custom label in sidebar (if different from title)</td>
+                        <td><span class="tag tag-default">Default</span></td>
+                    </tr>
+                    <tr>
+                        <td><code>description</code></td>
+                        <td>SEO meta description</td>
+                        <td><span class="tag tag-default">Default</span></td>
+                    </tr>
+                </tbody>
+            </table>
+            
+            <p><strong>File Reference:</strong> <span class="file-ref">docs/guides.mdx</span>, <span class="file-ref">docs/authentication.mdx</span></p>
+        </section>
+
+        <section id="tabs">
+            <h2>4. Tabs Component <span class="tag tag-default">Default</span></h2>
+            <p>The Tabs component is a <strong>built-in Docusaurus theme component</strong> that allows displaying content in switchable tabs. Perfect for showing code examples in multiple languages.</p>
+            
+            <h3>Import Statement</h3>
+            <div class="code-block">
+                <code>
+<span class="keyword">import</span> Tabs <span class="keyword">from</span> <span class="string">'@theme/Tabs'</span>;<br>
+<span class="keyword">import</span> TabItem <span class="keyword">from</span> <span class="string">'@theme/TabItem'</span>;
+                </code>
+            </div>
+            
+            <h3>Usage Example</h3>
+            <div class="code-block">
+                <code>
+<span class="tag-name">&lt;Tabs&gt;</span><br>
+&nbsp;&nbsp;<span class="tag-name">&lt;TabItem</span> <span class="attr">value</span>=<span class="string">"http"</span> <span class="attr">label</span>=<span class="string">"HTTP"</span> <span class="attr">default</span><span class="tag-name">&gt;</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;```json<br>
+&nbsp;&nbsp;&nbsp;&nbsp;{ "title": "NDA Agreement" }<br>
+&nbsp;&nbsp;&nbsp;&nbsp;```<br>
+&nbsp;&nbsp;<span class="tag-name">&lt;/TabItem&gt;</span><br>
+&nbsp;&nbsp;<span class="tag-name">&lt;TabItem</span> <span class="attr">value</span>=<span class="string">"python"</span> <span class="attr">label</span>=<span class="string">"Python"</span><span class="tag-name">&gt;</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;```python<br>
+&nbsp;&nbsp;&nbsp;&nbsp;response = requests.post(url, json=payload)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;```<br>
+&nbsp;&nbsp;<span class="tag-name">&lt;/TabItem&gt;</span><br>
+<span class="tag-name">&lt;/Tabs&gt;</span>
+                </code>
+            </div>
+            
+            <h3>Tab Properties</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Property</th>
+                        <th>Description</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><code>value</code></td>
+                        <td>Unique identifier for the tab (required)</td>
+                    </tr>
+                    <tr>
+                        <td><code>label</code></td>
+                        <td>Display text shown on the tab button</td>
+                    </tr>
+                    <tr>
+                        <td><code>default</code></td>
+                        <td>Marks this tab as the initially selected tab</td>
+                    </tr>
+                </tbody>
+            </table>
+            
+            <div class="note">
+                <div class="note-title">💡 Design Decision</div>
+                <p>We use Tabs extensively to show API examples in HTTP, Python, Node.js, Java, and Bash. This allows developers to view code in their preferred language without page clutter.</p>
+            </div>
+        </section>
+
+        <section id="mermaid">
+            <h2>5. Mermaid Diagrams <span class="tag tag-plugin">Plugin</span></h2>
+            <p>Mermaid support requires the <strong>@docusaurus/theme-mermaid</strong> plugin. This is <strong>NOT included by default</strong> and was added to our project.</p>
+            
+            <h3>Configuration Required</h3>
+            <div class="code-block">
+                <code>
+<span class="comment">// docusaurus.config.js</span><br><br>
+<span class="keyword">markdown:</span> {<br>
+&nbsp;&nbsp;<span class="attr">mermaid:</span> <span class="string">true</span>,<br>
+&nbsp;&nbsp;<span class="attr">format:</span> <span class="string">'detect'</span>,<br>
+},<br>
+<span class="keyword">themes:</span> [<span class="string">'@docusaurus/theme-mermaid'</span>],
+                </code>
+            </div>
+            
+            <h3>Usage in MDX</h3>
+            <div class="code-block">
+                <code>
+```mermaid<br>
+flowchart TD<br>
+&nbsp;&nbsp;&nbsp;&nbsp;A[Client] --> B[Send Request]<br>
+&nbsp;&nbsp;&nbsp;&nbsp;B --> C{Validate API Key}<br>
+&nbsp;&nbsp;&nbsp;&nbsp;C -->|Valid| D[200 OK]<br>
+&nbsp;&nbsp;&nbsp;&nbsp;C -->|Invalid| E[401 Unauthorized]<br>
+```
+                </code>
+            </div>
+            
+            <h3>Supported Diagram Types</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Type</th>
+                        <th>Use Case</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><code>flowchart</code></td>
+                        <td>Process flows, decision trees (used for Authentication Flow)</td>
+                    </tr>
+                    <tr>
+                        <td><code>sequenceDiagram</code></td>
+                        <td>API request/response sequences</td>
+                    </tr>
+                    <tr>
+                        <td><code>stateDiagram</code></td>
+                        <td>Status transitions</td>
+                    </tr>
+                    <tr>
+                        <td><code>erDiagram</code></td>
+                        <td>Entity relationships</td>
+                    </tr>
+                </tbody>
+            </table>
+            
+            <p><strong>Package:</strong> <span class="file-ref">@docusaurus/theme-mermaid ^3.9.2</span></p>
+        </section>
+
+        <section id="codeblocks">
+            <h2>6. Code Blocks <span class="tag tag-default">Default</span></h2>
+            <p>Code blocks use standard Markdown fenced code syntax with <strong>Prism React Renderer</strong> for syntax highlighting. This is a <strong>default Docusaurus feature</strong>.</p>
+            
+            <h3>Basic Syntax</h3>
+            <div class="code-block">
+                <code>
+```python<br>
+def hello():<br>
+&nbsp;&nbsp;&nbsp;&nbsp;return "Hello World"<br>
+```
+                </code>
+            </div>
+            
+            <h3>With Title Metadata</h3>
+            <div class="code-block">
+                <code>
+```bash <span class="attr">title</span>=<span class="string">".env"</span><br>
+API_KEY=your_api_key_here<br>
+BASE_URL=https://api.covosign.com<br>
+```
+                </code>
+            </div>
+            
+            <h3>Supported Languages in Our Docs</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Language</th>
+                        <th>Identifier</th>
+                        <th>Used For</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Python</td>
+                        <td><code>python</code></td>
+                        <td>SDK examples</td>
+                    </tr>
+                    <tr>
+                        <td>JavaScript</td>
+                        <td><code>javascript</code></td>
+                        <td>Node.js SDK examples</td>
+                    </tr>
+                    <tr>
+                        <td>Java</td>
+                        <td><code>java</code></td>
+                        <td>Spring Boot examples</td>
+                    </tr>
+                    <tr>
+                        <td>JSON</td>
+                        <td><code>json</code></td>
+                        <td>API request/response bodies</td>
+                    </tr>
+                    <tr>
+                        <td>HTTP</td>
+                        <td><code>http</code></td>
+                        <td>Header examples</td>
+                    </tr>
+                    <tr>
+                        <td>Bash</td>
+                        <td><code>bash</code></td>
+                        <td>cURL commands, env files</td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
+
+        <section id="sidebar">
+            <h2>7. Sidebar Configuration <span class="tag tag-default">Default</span></h2>
+            <p>Sidebar structure is defined in <span class="file-ref">sidebars.js</span>. This is a <strong>standard Docusaurus configuration</strong>, but the structure and groupings are our custom design.</p>
+            
+            <h3>Configuration Structure</h3>
+            <div class="code-block">
+                <code>
+<span class="keyword">const</span> sidebars = {<br>
+&nbsp;&nbsp;docsSidebar: [<br>
+&nbsp;&nbsp;&nbsp;&nbsp;{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="attr">type:</span> <span class="string">'category'</span>,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="attr">label:</span> <span class="string">'Essentials'</span>,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="attr">collapsible:</span> <span class="string">false</span>,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="attr">items:</span> [<span class="string">'authentication'</span>, <span class="string">'api-keys'</span>, ...],<br>
+&nbsp;&nbsp;&nbsp;&nbsp;},<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">// More categories...</span><br>
+&nbsp;&nbsp;],<br>
+};
+                </code>
+            </div>
+            
+            <h3>Our Sidebar Structure</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Category</th>
+                        <th>Pages</th>
+                        <th>Purpose</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Essentials</strong></td>
+                        <td>Authentication, API Keys, Sandbox, Best Practices</td>
+                        <td>Getting started fundamentals</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Guides</strong></td>
+                        <td>Quick Start, Workflows, Webhooks, Statuses</td>
+                        <td>Step-by-step tutorials</td>
+                    </tr>
+                    <tr>
+                        <td><strong>API Reference</strong></td>
+                        <td>Request/Response, Errors, Rate Limits, etc.</td>
+                        <td>Technical specifications</td>
+                    </tr>
+                </tbody>
+            </table>
+            
+            <div class="note">
+                <div class="note-title">💡 Design Decision</div>
+                <p>We set <code>collapsible: false</code> on all categories to keep the full navigation visible at all times, improving discoverability.</p>
+            </div>
+        </section>
+
+        <section id="components">
+            <h2>8. Custom React Components <span class="tag tag-custom">Custom</span></h2>
+            <p>We created <strong>custom React components</strong> to enhance the landing page. These are NOT part of the default Docusaurus template.</p>
+            
+            <div class="comparison">
+                <div>
+                    <h4><span class="tag tag-custom">Custom</span> Card Component</h4>
+                    <p><strong>Location:</strong> <span class="file-ref">src/components/Card/index.js</span></p>
+                    <div class="code-block">
+                        <code>
+<span class="tag-name">&lt;Card</span><br>
+&nbsp;&nbsp;<span class="attr">title</span>=<span class="string">"Authentication"</span><br>
+&nbsp;&nbsp;<span class="attr">description</span>=<span class="string">"Learn how to..."</span><br>
+&nbsp;&nbsp;<span class="attr">badge</span>=<span class="string">"Dev"</span><br>
+&nbsp;&nbsp;<span class="attr">to</span>=<span class="string">"/docs/authentication"</span><br>
+<span class="tag-name">/&gt;</span>
+                        </code>
+                    </div>
+                </div>
+                <div>
+                    <h4><span class="tag tag-custom">Custom</span> Section Component</h4>
+                    <p><strong>Location:</strong> <span class="file-ref">src/components/Section/index.js</span></p>
+                    <div class="code-block">
+                        <code>
+<span class="tag-name">&lt;Section</span> <span class="attr">title</span>=<span class="string">"Essentials"</span><span class="tag-name">&gt;</span><br>
+&nbsp;&nbsp;<span class="tag-name">&lt;Card ... /&gt;</span><br>
+&nbsp;&nbsp;<span class="tag-name">&lt;Card ... /&gt;</span><br>
+<span class="tag-name">&lt;/Section&gt;</span>
+                        </code>
+                    </div>
+                </div>
+            </div>
+            
+            <h3>Default vs Custom Components</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Component</th>
+                        <th>Source</th>
+                        <th>Description</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><code>Layout</code></td>
+                        <td><span class="tag tag-default">Default</span></td>
+                        <td>Main page wrapper from @theme/Layout</td>
+                    </tr>
+                    <tr>
+                        <td><code>Link</code></td>
+                        <td><span class="tag tag-default">Default</span></td>
+                        <td>Client-side navigation from @docusaurus/Link</td>
+                    </tr>
+                    <tr>
+                        <td><code>Heading</code></td>
+                        <td><span class="tag tag-default">Default</span></td>
+                        <td>Semantic heading from @theme/Heading</td>
+                    </tr>
+                    <tr>
+                        <td><code>Tabs / TabItem</code></td>
+                        <td><span class="tag tag-default">Default</span></td>
+                        <td>Tabbed content from @theme/Tabs</td>
+                    </tr>
+                    <tr>
+                        <td><code>Card</code></td>
+                        <td><span class="tag tag-custom">Custom</span></td>
+                        <td>Landing page cards with badges</td>
+                    </tr>
+                    <tr>
+                        <td><code>Section</code></td>
+                        <td><span class="tag tag-custom">Custom</span></td>
+                        <td>Grouped card container with title</td>
+                    </tr>
+                    <tr>
+                        <td><code>HomepageFeatures</code></td>
+                        <td><span class="tag tag-default">Default</span></td>
+                        <td>Template feature grid (kept but unused)</td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
+
+        <section id="theming">
+            <h2>9. Theming & CSS <span class="tag tag-default">Default</span> + <span class="tag tag-custom">Custom</span></h2>
+            <p>Docusaurus uses <strong>Infima</strong> as its CSS framework. We customize it via CSS variables in <span class="file-ref">src/css/custom.css</span>.</p>
+            
+            <h3>CSS Variable Customization</h3>
+            <div class="code-block">
+                <code>
+<span class="comment">/* custom.css - Overriding Infima defaults */</span><br><br>
+<span class="keyword">:root</span> {<br>
+&nbsp;&nbsp;<span class="attr">--ifm-color-primary:</span> <span class="string">#2e8555</span>;<br>
+&nbsp;&nbsp;<span class="attr">--ifm-color-primary-dark:</span> <span class="string">#29784c</span>;<br>
+&nbsp;&nbsp;<span class="attr">--ifm-code-font-size:</span> <span class="string">95%</span>;<br>
+}<br><br>
+<span class="keyword">[data-theme='dark']</span> {<br>
+&nbsp;&nbsp;<span class="attr">--ifm-color-primary:</span> <span class="string">#25c2a0</span>;<br>
+}
+                </code>
+            </div>
+            
+            <h3>Theming Breakdown</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Feature</th>
+                        <th>Source</th>
+                        <th>Notes</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Infima CSS Framework</td>
+                        <td><span class="tag tag-default">Default</span></td>
+                        <td>Bundled with classic preset</td>
+                    </tr>
+                    <tr>
+                        <td>CSS Variables (--ifm-*)</td>
+                        <td><span class="tag tag-default">Default</span></td>
+                        <td>Standard customization method</td>
+                    </tr>
+                    <tr>
+                        <td>Dark Mode</td>
+                        <td><span class="tag tag-default">Default</span></td>
+                        <td>Enabled via respectPrefersColorScheme</td>
+                    </tr>
+                    <tr>
+                        <td>Primary Color (#2e8555)</td>
+                        <td><span class="tag tag-custom">Custom</span></td>
+                        <td>Our brand green</td>
+                    </tr>
+                    <tr>
+                        <td>Component CSS Modules</td>
+                        <td><span class="tag tag-custom">Custom</span></td>
+                        <td>styles.module.css for Card, Section</td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
+
+        <section id="summary">
+            <h2>10. Summary Table</h2>
+            <p>Complete overview of all syntax features and their origins:</p>
+            
+            <table>
+                <thead>
+                    <tr>
+                        <th>Feature</th>
+                        <th>Origin</th>
+                        <th>Configuration File</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>MDX File Format</td>
+                        <td><span class="tag tag-default">Default</span></td>
+                        <td>Built into Docusaurus</td>
+                    </tr>
+                    <tr>
+                        <td>Frontmatter (YAML metadata)</td>
+                        <td><span class="tag tag-default">Default</span></td>
+                        <td>Built into Docusaurus</td>
+                    </tr>
+                    <tr>
+                        <td>Tabs Component</td>
+                        <td><span class="tag tag-default">Default</span></td>
+                        <td>@theme/Tabs</td>
+                    </tr>
+                    <tr>
+                        <td>Mermaid Diagrams</td>
+                        <td><span class="tag tag-plugin">Plugin</span></td>
+                        <td>docusaurus.config.js</td>
+                    </tr>
+                    <tr>
+                        <td>Code Syntax Highlighting</td>
+                        <td><span class="tag tag-default">Default</span></td>
+                        <td>prism-react-renderer</td>
+                    </tr>
+                    <tr>
+                        <td>Sidebar Categories</td>
+                        <td><span class="tag tag-default">Default</span></td>
+                        <td>sidebars.js</td>
+                    </tr>
+                    <tr>
+                        <td>Card Component</td>
+                        <td><span class="tag tag-custom">Custom</span></td>
+                        <td>src/components/Card/</td>
+                    </tr>
+                    <tr>
+                        <td>Section Component</td>
+                        <td><span class="tag tag-custom">Custom</span></td>
+                        <td>src/components/Section/</td>
+                    </tr>
+                    <tr>
+                        <td>Landing Page Layout</td>
+                        <td><span class="tag tag-custom">Custom</span></td>
+                        <td>src/pages/index.js</td>
+                    </tr>
+                    <tr>
+                        <td>Brand Colors</td>
+                        <td><span class="tag tag-custom">Custom</span></td>
+                        <td>src/css/custom.css</td>
+                    </tr>
+                    <tr>
+                        <td>Dark Mode</td>
+                        <td><span class="tag tag-default">Default</span></td>
+                        <td>docusaurus.config.js</td>
+                    </tr>
+                </tbody>
+            </table>
+            
+        </section>
+
+        <section id="distribution-summary">
+            <h2>📊 Feature Distribution Summary</h2>
+            <p>This breakdown shows the origin of features used in the CovoSign documentation site.</p>
+
+            <div class="feature-grid">
+                <div class="feature-card" style="border-left: 4px solid var(--default-tag);">
+                    <h4>🔵 Default Docusaurus (~70%)</h4>
+                    <p>Core framework features requiring no additional setup.</p>
+                </div>
+                <div class="feature-card" style="border-left: 4px solid #d97706;">
+                    <h4>🟠 Plugin Added (~10%)</h4>
+                    <p>Official plugins added to extend functionality.</p>
+                </div>
+                <div class="feature-card" style="border-left: 4px solid var(--custom-tag);">
+                    <h4>🟣 Custom Built (~20%)</h4>
+                    <p>Project-specific components and styling.</p>
+                </div>
+            </div>
+
+            <h3>🔵 Default Docusaurus Features (70%)</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Feature</th>
+                        <th>Description</th>
+                        <th>Configuration</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>MDX Support</td>
+                        <td>Markdown with embedded JSX components</td>
+                        <td>Built into @docusaurus/preset-classic</td>
+                    </tr>
+                    <tr>
+                        <td>Tabs Component</td>
+                        <td>Switchable content tabs for code examples</td>
+                        <td>Import from @docusaurus/theme-common</td>
+                    </tr>
+                    <tr>
+                        <td>Code Blocks</td>
+                        <td>Syntax highlighting with Prism, line numbers, titles</td>
+                        <td>prism-react-renderer (included)</td>
+                    </tr>
+                    <tr>
+                        <td>Sidebar Navigation</td>
+                        <td>Hierarchical docs navigation with categories</td>
+                        <td>sidebars.js configuration</td>
+                    </tr>
+                    <tr>
+                        <td>Dark Mode</td>
+                        <td>Automatic theme switching based on system preference</td>
+                        <td>colorMode.respectPrefersColorScheme: true</td>
+                    </tr>
+                    <tr>
+                        <td>Navbar & Footer</td>
+                        <td>Site-wide navigation and link sections</td>
+                        <td>themeConfig in docusaurus.config.js</td>
+                    </tr>
+                    <tr>
+                        <td>Frontmatter</td>
+                        <td>YAML metadata for page configuration</td>
+                        <td>Standard MDX feature</td>
+                    </tr>
+                    <tr>
+                        <td>Responsive Layout</td>
+                        <td>Mobile-friendly Infima CSS framework</td>
+                        <td>Included with classic theme</td>
+                    </tr>
+                    <tr>
+                        <td>SEO Optimization</td>
+                        <td>Meta tags, sitemaps, canonical URLs</td>
+                        <td>Automatic from frontmatter</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h3>🟠 Plugin Added Features (10%)</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Feature</th>
+                        <th>Plugin</th>
+                        <th>Purpose</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Mermaid Diagrams</td>
+                        <td>@docusaurus/theme-mermaid</td>
+                        <td>Render flowcharts, sequence diagrams, and state diagrams in MDX</td>
+                    </tr>
+                </tbody>
+            </table>
+            <div class="code-block">
+                <code>
+<span class="comment">// docusaurus.config.js - Mermaid configuration</span><br>
+<span class="keyword">markdown</span>: {<br>
+&nbsp;&nbsp;<span class="attr">mermaid</span>: <span class="string">true</span>,<br>
+},<br>
+<span class="keyword">themes</span>: [<span class="string">'@docusaurus/theme-mermaid'</span>],
+                </code>
+            </div>
+
+            <h3>🟣 Custom Built Features (20%)</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Feature</th>
+                        <th>Location</th>
+                        <th>Purpose</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Card Component</td>
+                        <td>src/components/Card/</td>
+                        <td>Reusable navigation cards with icons and descriptions</td>
+                    </tr>
+                    <tr>
+                        <td>Section Component</td>
+                        <td>src/components/Section/</td>
+                        <td>Content grouping with titled sections on landing page</td>
+                    </tr>
+                    <tr>
+                        <td>Landing Page</td>
+                        <td>src/pages/index.js</td>
+                        <td>Custom hero section, feature cards, and documentation overview</td>
+                    </tr>
+                    <tr>
+                        <td>Brand Colors</td>
+                        <td>src/css/custom.css</td>
+                        <td>CovoSign green (#2e8555) and custom CSS variables</td>
+                    </tr>
+                    <tr>
+                        <td>Page Styling</td>
+                        <td>src/pages/index.module.css</td>
+                        <td>Landing page specific layouts and responsive styling</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div class="note">
+                <div class="note-title">💡 Customization Strategy</div>
+                <p>The CovoSign documentation leverages Docusaurus defaults wherever possible to minimize maintenance overhead, while custom components focus on brand-specific UI elements and the landing page experience.</p>
+            </div>
+        </section>
+    </div>
+    
+    <footer>
+        <p>CovoSign Documentation Team | Docusaurus v3.9.2 | January 2026</p>
+    </footer>
+</body>
+</html>

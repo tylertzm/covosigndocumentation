@@ -43,6 +43,7 @@
 .buttonGroup {
   display: flex;
   gap: 1rem;
+  flex-wrap: wrap;
 }
 
 @keyframes fadeIn {
@@ -55,4 +56,75 @@
     opacity: 1;
     transform: translateY(0);
   }
+}
+
+/* Mobile-first responsive styles */
+@media (max-width: 480px) {
+  .landingContainer {
+    padding: 1.5rem 1rem;
+  }
+
+  .heroTitle {
+    font-size: 1.5rem;
+    line-height: 2rem;
+    margin-bottom: 1rem;
+  }
+
+  .heroCard {
+    padding: 1.25rem;
+    border-radius: 0.5rem;
+  }
+
+  .apiTitle {
+    font-size: 1rem;
+  }
+
+  .apiDescription {
+    font-size: 0.875rem;
+  }
+
+  .buttonGroup {
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+
+  .buttonGroup > :global(.button) {
+    width: 100%;
+    text-align: center;
+    justify-content: center;
+  }
+}
+
+/* Tablet responsive styles */
+@media (min-width: 481px) and (max-width: 768px) {
+  .landingContainer {
+    padding: 2rem 1.25rem;
+  }
+
+  .heroTitle {
+    font-size: 1.75rem;
+    line-height: 2.25rem;
+  }
+
+  .heroCard {
+    padding: 1.5rem;
+  }
+}
+
+/* Dark mode support */
+:global([data-theme='dark']) .heroTitle {
+  color: #f1f5f9;
+}
+
+:global([data-theme='dark']) .heroCard {
+  background-color: #1e293b;
+  border-color: #334155;
+}
+
+:global([data-theme='dark']) .apiTitle {
+  color: #f1f5f9;
+}
+
+:global([data-theme='dark']) .apiDescription {
+  color: #94a3b8;
 }

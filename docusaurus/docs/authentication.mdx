@@ -56,7 +56,7 @@ API key missing, invalid, or expired. Returns 401 Unauthorized.
 Implementing authentication in your client code involves setting the appropriate headers in HTTP requests. The examples below show how to construct headers in popular programming languages. Note that the API key should be stored securely (e.g., in environment variables) and never hardcoded or exposed in client-side code. The 'Content-Type' header specifies the format of the request body, typically JSON for API calls.
 
 <Tabs>
-  <TabItem value="javascript" label="JavaScript" default>
+  <TabItem value="javascript" label="Node.js" default>
     ```javascript
     const headers = {
       'Authorization': `Bearer ${apiKey}`,
