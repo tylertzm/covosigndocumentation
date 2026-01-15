@@ -28,35 +28,63 @@ const LandingPage = ({ onNavigate }) => {
         <div className="max-w-6xl mx-auto px-6 py-12 animate-in fade-in duration-500">
             <div className="mb-12">
                 <h1 className="text-4xl font-bold text-slate-900 mb-6 tracking-tight">Developer Resources</h1>
-                <div className="bg-slate-50 border border-slate-200 rounded-xl p-8">
-                    <h2 className="text-lg font-bold text-slate-900 mb-3">API Overview</h2>
-                    <p className="text-slate-600 leading-relaxed mb-4">
-                        Create an account and learn how to build on CovoSign.
-                    </p>
-                </div>
             </div>
-            <Section title="Essentials">
 
+            <Section title="Correlation ID">
+                <div onClick={() => onNavigate("correlation")}>
+                    <Card
+                        title="Correlation IDs"
+                        description="Track requests across distributed systems with unique identifiers and correlation headers."
+                    />
+                </div>
+            </Section>
+
+            <Section title="Essentials">
+                <div onClick={() => onNavigate("guide")}>
+                    <Card
+                        title="Quick Start"
+                        description="Step-by-step walkthrough to create your first signature request in minutes."
+                        badge="Start"
+                    />
+                </div>
+                <div onClick={() => onNavigate("workflows")}>
+                    <Card
+                        title="Signer Workflow Types"
+                        description="Automate complex signing flows with sequential, parallel, or single signer routing."
+                    />
+                </div>
+                <div onClick={() => onNavigate("fieldTypes")}>
+                    <Card
+                        title="Signature Field Types"
+                        description="Explore available field types for signature requests and form data collection."
+                    />
+                </div>
+                <div onClick={() => onNavigate("statuses")}>
+                    <Card
+                        title="Signature Statuses"
+                        description="Understand the lifecycle and state transitions of signature requests and recipients."
+                    />
+                </div>
+            </Section>
+
+            <Section title="Developer Onboarding">
                 <div onClick={() => onNavigate("auth")}>
                     <Card
                         title="Authentication"
                         description="Learn how to authenticate your API requests using API keys and secure headers."
                     />
                 </div>
+                <div onClick={() => onNavigate("apikeys")}>
+                    <Card
+                        title="API Keys"
+                        description="Manage your secret keys for both Production and Sandbox environments."
+                    />
+                </div>
                 <div onClick={() => onNavigate("sandbox")}>
                     <Card
                         title="Sandbox Environment"
-                        description="Test your integration safely with isolated data and mocked Webhooks."
+                        description="Test your integration safely with isolated data and mocked webhooks."
                         badge="Dev"
-                    />
-                </div>
-            </Section>
-
-            <Section title="Features">
-                <div onClick={() => onNavigate("workflows")}>
-                    <Card
-                        title="Workflows"
-                        description="Automate complex signing flows with sequential, parallel, or broadcast routing."
                     />
                 </div>
                 <div onClick={() => onNavigate("webhooks")}>
@@ -65,37 +93,9 @@ const LandingPage = ({ onNavigate }) => {
                         description="Listen for real-time events like document completion or signer tracking."
                     />
                 </div>
-                <div onClick={() => onNavigate("auditTrail")}>
-                    <Card
-                        title="Audit Trails"
-                        description="Access legally binding audit logs with IP tracking and timestamping."
-                    />
-                </div>
             </Section>
 
-            <Section title="Tools">
-                <div onClick={() => onNavigate("apikeys")}>
-                    <Card
-                        title="API Keys"
-                        description="Manage your secret keys for both Production and Sandbox environments."
-                    />
-                </div>
-                <div onClick={() => onNavigate("guide")}>
-                    <Card
-                        title="Interactive Guides"
-                        description="Step-by-step walkthroughs to create your first signature request in minutes."
-                        badge="New"
-                    />
-                </div>
-                <div onClick={() => onNavigate("statuses")}>
-                    <Card
-                        title="Status Lifecycle"
-                        description="Understand the state machine of requests and recipients."
-                    />
-                </div>
-            </Section>
-
-            <Section title="Reference">
+            <Section title="Request/Response Format">
                 <div onClick={() => onNavigate("reqres")}>
                     <Card
                         title="Request & Response"
@@ -112,6 +112,21 @@ const LandingPage = ({ onNavigate }) => {
                     <Card
                         title="Rate Limits"
                         description="Understand API limits and how to handle 429 Too Many Requests."
+                    />
+                </div>
+                <div onClick={() => onNavigate("idempotency")}>
+                    <Card
+                        title="Idempotency"
+                        description="Prevent duplicate requests with idempotency keys and safe retry patterns."
+                    />
+                </div>
+            </Section>
+
+            <Section title="Audit Trail">
+                <div onClick={() => onNavigate("auditTrail")}>
+                    <Card
+                        title="Audit Trail"
+                        description="Access legally binding audit logs with IP tracking, timestamps, and compliance data."
                     />
                 </div>
             </Section>

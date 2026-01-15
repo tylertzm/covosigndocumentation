@@ -16,78 +16,65 @@ export default function Home() {
         <div className={styles.landingContainer}>
           <div className={styles.heroSection}>
             <h1 className={styles.heroTitle}>Developer Resources</h1>
-            <div className={styles.heroCard}>
-              <h2 className={styles.apiTitle}>API Overview</h2>
-              <p className={styles.apiDescription}>
-                Create an account and learn how to build on CovoSign.
-              </p>
-              <div className={styles.buttonGroup}>
-                <Link
-                  className="button button--primary"
-                  to="/docs/guides">
-                  Get Started
-                </Link>
-                <Link
-                  className="button button--secondary"
-                  to="/docs/authentication">
-                  Read the Docs
-                </Link>
-              </div>
-            </div>
           </div>
 
+          <Section title="Correlation ID">
+            <Card
+              title="Correlation IDs"
+              description="Track requests across distributed systems with unique identifiers and correlation headers."
+              to="/docs/correlation-ids"
+            />
+          </Section>
+
           <Section title="Essentials">
+            <Card
+              title="Quick Start"
+              description="Step-by-step walkthrough to create your first signature request in minutes."
+              badge="Start"
+              to="/docs/guides"
+            />
+            <Card
+              title="Signer Workflow Types"
+              description="Automate complex signing flows with sequential, parallel, or single signer routing."
+              to="/docs/workflows"
+            />
+            <Card
+              title="Signature Field Types"
+              description="Explore available field types for signature requests and form data collection."
+              to="/docs/field-types"
+            />
+            <Card
+              title="Signature Statuses"
+              description="Understand the lifecycle and state transitions of signature requests and recipients."
+              to="/docs/statuses"
+            />
+          </Section>
+
+          <Section title="Developer Onboarding">
             <Card
               title="Authentication"
               description="Learn how to authenticate your API requests using API keys and secure headers."
               to="/docs/authentication"
             />
             <Card
+              title="API Keys"
+              description="Manage your secret keys for both Production and Sandbox environments."
+              to="/docs/api-keys"
+            />
+            <Card
               title="Sandbox Environment"
-              description="Test your integration safely with isolated data and mocked Webhooks."
+              description="Test your integration safely with isolated data and mocked webhooks."
               badge="Dev"
               to="/docs/sandbox"
-            />
-          </Section>
-
-          <Section title="Features">
-            <Card
-              title="Workflows"
-              description="Automate complex signing flows with sequential, parallel, or broadcast routing."
-              to="/docs/workflows"
             />
             <Card
               title="Webhooks"
               description="Listen for real-time events like document completion or signer tracking."
               to="/docs/webhooks"
             />
-            <Card
-              title="Audit Trails"
-              description="Access legally binding audit logs with IP tracking and timestamping."
-              to="/docs/audit-trail"
-            />
           </Section>
 
-          <Section title="Tools">
-            <Card
-              title="API Keys"
-              description="Manage your secret keys for both Production and Sandbox environments."
-              to="/docs/api-keys"
-            />
-            <Card
-              title="Interactive Guides"
-              description="Step-by-step walkthroughs to create your first signature request in minutes."
-              badge="New"
-              to="/docs/guides"
-            />
-            <Card
-              title="Status Lifecycle"
-              description="Understand the state machine of requests and recipients."
-              to="/docs/statuses"
-            />
-          </Section>
-
-          <Section title="Reference">
+          <Section title="Request/Response Format">
             <Card
               title="Request & Response"
               description="Standard JSON formats, envelopes, and data types used across the API."
@@ -102,6 +89,19 @@ export default function Home() {
               title="Rate Limits"
               description="Understand API limits and how to handle 429 Too Many Requests."
               to="/docs/rate-limits"
+            />
+            <Card
+              title="Idempotency"
+              description="Prevent duplicate requests with idempotency keys and safe retry patterns."
+              to="/docs/idempotency"
+            />
+          </Section>
+
+          <Section title="Audit Trail">
+            <Card
+              title="Audit Trail"
+              description="Access legally binding audit logs with IP tracking, timestamps, and compliance data."
+              to="/docs/audit-trail"
             />
           </Section>
         </div>

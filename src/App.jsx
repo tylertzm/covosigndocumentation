@@ -5,9 +5,21 @@ import { LandingPage, SandboxContent, GuidesContent, AuthContent, RequestRespons
 
 const NAV_SECTIONS = [
   {
-    title: "Getting Started",
+    title: "Correlation ID",
     items: [
-
+      {
+        id: "correlation",
+        label: "Correlation IDs",
+        subsections: [
+          { id: "corr-flow", label: "Flow" },
+          { id: "corr-header", label: "Headers" },
+        ],
+      },
+    ],
+  },
+  {
+    title: "Essentials",
+    items: [
       {
         id: "guide",
         label: "Quick Start",
@@ -19,56 +31,58 @@ const NAV_SECTIONS = [
         ],
       },
       {
-        id: "sandbox",
-        label: "Sandbox",
-        subsections: [
-          { id: "sandbox-urls", label: "URLs" },
-          { id: "sandbox-diff", label: "Differences" },
-          { id: "sandbox-test", label: "Testing" },
-        ],
-      },
-      { id: "apikeys", label: "API Keys" },
-    ],
-  },
-  {
-    title: "Features",
-    items: [
-      {
         id: "workflows",
-        label: "Signature Workflows",
+        label: "Signer Workflow Types",
         subsections: [
           { id: "workflow-single", label: "Single Signer" },
           { id: "workflow-parallel", label: "Parallel" },
           { id: "workflow-sequential", label: "Sequential" },
         ],
       },
+      { id: "fieldTypes", label: "Signature Field Types" },
       {
         id: "statuses",
-        label: "Statuses",
+        label: "Signature Statuses",
         subsections: [
           { id: "status-lifecycle", label: "Lifecycle" },
           { id: "req-management", label: "Actions" },
         ],
       },
-      { id: "fieldTypes", label: "Field Types" },
-      {
-        id: "auditTrail",
-        label: "Audit Trail",
-        subsections: [
-          { id: "audit-overview", label: "Overview" },
-          { id: "audit-data", label: "Captured Data" },
-          { id: "audit-process", label: "Generation" },
-          { id: "audit-api", label: "API & Retrieval" },
-          { id: "audit-compliance", label: "Compliance" },
-          { id: "audit-events", label: "Events" },
-          { id: "audit-timezone", label: "Timezone" },
-        ],
-      },
-
     ],
   },
   {
-    title: "Enterprise API",
+    title: "Developer Onboarding",
+    items: [
+      {
+        id: "auth",
+        label: "Authentication",
+        subsections: [
+          { id: "auth-headers", label: "Headers" },
+          { id: "auth-clients", label: "Clients" },
+        ],
+      },
+      { id: "apikeys", label: "API Keys" },
+      {
+        id: "sandbox",
+        label: "Sandbox Environment",
+        subsections: [
+          { id: "sandbox-urls", label: "URLs" },
+          { id: "sandbox-diff", label: "Differences" },
+          { id: "sandbox-test", label: "Testing" },
+        ],
+      },
+      {
+        id: "webhooks",
+        label: "Webhooks",
+        subsections: [
+          { id: "hooks-events", label: "Events" },
+          { id: "hooks-security", label: "Security" },
+        ],
+      },
+    ],
+  },
+  {
+    title: "Request/Response Format",
     items: [
       {
         id: "reqres",
@@ -87,6 +101,7 @@ const NAV_SECTIONS = [
           { id: "err-retry", label: "Retries" },
         ],
       },
+      { id: "rateLimits", label: "Rate Limits" },
       {
         id: "idempotency",
         label: "Idempotency",
@@ -95,40 +110,24 @@ const NAV_SECTIONS = [
           { id: "idemp-client", label: "Client" },
         ],
       },
+    ],
+  },
+  {
+    title: "Audit Trail",
+    items: [
       {
-        id: "pagination",
-        label: "Pagination",
+        id: "auditTrail",
+        label: "Audit Trail",
         subsections: [
-          { id: "page-cursor", label: "Cursor" },
-          { id: "page-filters", label: "Filters" },
+          { id: "audit-overview", label: "Overview" },
+          { id: "audit-data", label: "Captured Data" },
+          { id: "audit-process", label: "Generation" },
+          { id: "audit-api", label: "API & Retrieval" },
+          { id: "audit-compliance", label: "Compliance" },
+          { id: "audit-events", label: "Events" },
+          { id: "audit-timezone", label: "Timezone" },
         ],
       },
-      {
-        id: "correlation",
-        label: "Correlation IDs",
-        subsections: [
-          { id: "corr-flow", label: "Flow" },
-          { id: "corr-header", label: "Headers" },
-        ],
-      },
-      {
-        id: "webhooks",
-        label: "Webhooks",
-        subsections: [
-          { id: "hooks-events", label: "Events" },
-          { id: "hooks-security", label: "Security" },
-        ],
-      },
-      {
-        id: "auth",
-        label: "Authentication",
-        subsections: [
-          { id: "auth-headers", label: "Headers" },
-          { id: "auth-clients", label: "Clients" },
-        ],
-      },
-      { id: "rateLimits", label: "Rate Limits" },
-      { id: "bestPractices", label: "Best Practices" },
     ],
   },
 ];
