@@ -28,3 +28,18 @@
   --ifm-color-primary-lightest: #4fddbf;
   --docusaurus-highlighted-code-line-bg: rgba(0, 0, 0, 0.3);
 }
+
+/* Quick Start sidebar styling */
+.sidebar-quick-start {
+  font-weight: 700 !important;
+  color: #0ea5e9 !important;
+  background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 50%, #f0f9ff 100%);
+  border-left: 3px solid #0ea5e9;
+  padding-left: 12px !important;
+  margin-left: -15px !important;
+  border-radius: 0 4px 4px 0;
+}
+
+.sidebar-quick-start:hover {
+  background: linear-gradient(135deg, #e0f2fe 0%, #bae6fd 50%, #e0f2fe 100%) !important;
+}

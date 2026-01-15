@@ -18,20 +18,13 @@ export default function Home() {
             <h1 className={styles.heroTitle}>Developer Resources</h1>
           </div>
 
-          <Section title="Correlation ID">
-            <Card
-              title="Correlation IDs"
-              description="Track requests across distributed systems with unique identifiers and correlation headers."
-              to="/docs/correlation-ids"
-            />
-          </Section>
-
           <Section title="Essentials">
             <Card
               title="Quick Start"
               description="Step-by-step walkthrough to create your first signature request in minutes."
               badge="Start"
               to="/docs/guides"
+              featured={true}
             />
             <Card
               title="Signer Workflow Types"
@@ -72,9 +65,6 @@ export default function Home() {
               description="Listen for real-time events like document completion or signer tracking."
               to="/docs/webhooks"
             />
-          </Section>
-
-          <Section title="Request/Response Format">
             <Card
               title="Request & Response"
               description="Standard JSON formats, envelopes, and data types used across the API."
@@ -95,9 +85,6 @@ export default function Home() {
               description="Prevent duplicate requests with idempotency keys and safe retry patterns."
               to="/docs/idempotency"
             />
-          </Section>
-
-          <Section title="Audit Trail">
             <Card
               title="Audit Trail"
               description="Access legally binding audit logs with IP tracking, timestamps, and compliance data."

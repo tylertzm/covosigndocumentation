@@ -5,7 +5,12 @@ const sidebars = {
       type: 'category',
       label: 'Essentials',
       items: [
-        'guides',
+        {
+          type: 'doc',
+          id: 'guides',
+          label: 'Quick Start',
+          className: 'sidebar-quick-start'
+        },
         'workflows',
         'field-types',
         'statuses',
