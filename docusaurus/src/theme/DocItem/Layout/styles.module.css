@@ -1,0 +1,38 @@
+/**
+ * Custom Doc layout overrides for collapsible desktop TOC.
+ */
+
+.docItemContainer header + *,
+.docItemContainer article > *:first-child {
+  margin-top: 0;
+}
+
+.docItemRow {
+  justify-content: center;
+}
+
+.docItemCol {
+  max-width: 100% !important;
+}
+
+.docItemColWithToc {
+  max-width: 100% !important;
+}
+
+.docItemContainer {
+  margin: 0 auto;
+  padding: 0 1rem;
+  max-width: 880px;
+}
+
+.tocDropdown {
+  display: block;
+  margin: 1rem 0 1.5rem;
+}
+
+@media (min-width: 997px) {
+  .docItemContainer {
+    padding-left: 2rem;
+    padding-right: 2rem;
+  }
+}
